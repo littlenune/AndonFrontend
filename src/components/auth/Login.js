@@ -36,17 +36,17 @@ class Login extends Component {
         }
         console.log(user);
 
-        axios.post('http://localhost:5000/api/user/login',{
+        axios.post('/api/user/login',{
             username: this.state.username,
             password: this.state.password,
         })
         .then(
             (res) => {
-                this.props.cookie(res.data.payload.username,res.data.payload.imgURL);
+                
+                this.props.cookie(res.data.payload.username,res.data.payload.gitName,res.data.payload.imgURL);
                 localStorage.setItem('token', res.data.token);
-                console.log('token: ',localStorage.token);
             swal({
-                title: "Success",
+                title: "You are logged in",
                 text: "Login successful",
                 type: "success",
                 confirmButtonText: "OK"
@@ -77,14 +77,17 @@ class Login extends Component {
         else {
         return (
             <div className="parallax">
+            <h1 id="header-text">ANDON MONITOR</h1>
             <div id="login-div">
+            
                 <form onSubmit={this.onSubmit}>
                 {/* <label>Username</label> */}
                     <input  type="text" name="username" required   autoComplete="off" placeholder="Username" onChange={this.onChange}/>
                 {/* <label>Password</label> */}
                     <input  type="password" placeholder="Password" required autoComplete="off"  name="password" value={this.state.password} onChange={this.onChange}></input>
-                    <input id="submitBtn" type="submit"/>
+                    <input id="submitBtn" type="submit" value="Login"/>
                 </form>
+                <a href="/register">Not a member? </a>
                 </div>
             </div>
         )
@@ -94,7 +97,7 @@ class Login extends Component {
 
 function mapDispatchToProps(dispatch){
     return {
-       cookie: (username, imgURL) => dispatch(addCookie(username,imgURL)),
+       cookie: (username,gitName, imgURL) => dispatch(addCookie(username,gitName,imgURL)),
     }
 }
 

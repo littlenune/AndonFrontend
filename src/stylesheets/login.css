@@ -53,4 +53,24 @@ input{
 
 label{
     color: white;
+
+}
+
+a:hover{
+    color:#F9DA4A;
+    font-style: italic;
+}
+
+a{
+    color: lightgray;
+    margin-left: 25%;
+    font-style: normal;
+}
+
+#header-text{
+    font-size: 50px;
+    /* padding-left: 0%; */
+    margin-left: 36%;
+    padding-top: 5%;
+    /* text-align: center; */
 }

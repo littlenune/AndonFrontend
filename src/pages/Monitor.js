@@ -22,15 +22,31 @@ class Monitor extends Component {
             imgURL: '../../image-url/'+this.props.profile_img,
             username: '',
             profileUsername: '',
+            gitName: '',
             profile: [],
-            commit_data: [
-                {name: 'Date', commit: 0}
-            ]
+            commit_data: []
         }
-        console.log(this.props.profile_img);
-        console.log(this.state.imgURL);
+        // console.log(this.props.profile_img);
+        // console.log(this.state.imgURL);
+        // console.log(this.props.gitName);
     }
-
+    componentDidMount(){
+        console.log('gitname : ',this.props.gitName);
+        axios({
+            url: '/api/git/currrepo',
+            method: 'post',
+            data: {
+                username: this.props.gitName,
+            },
+            headers: {
+                Authorization: localStorage.token
+            }
+        }) .then(res => {
+            console.log(res.data);
+            const profile = res.data;
+            this.setState({ profile});
+        });  
+    }
     isAuthenticated(){
         const token = localStorage.getItem('token');
         return token && token.length > 10;
@@ -45,14 +61,17 @@ class Monitor extends Component {
         }
         else {
               if(this.state.text === 'Watch'){
-            const user = {
-                username: this.state.username,
-                repository: this.state.repo_url,
-            }
-            console.log(user);
-            console.log(localStorage.token);
-            axios.post('http://localhost:5000/api/git/repoinfo', {headers: { 'Authorization': localStorage.token}}, user    
-            ) 
+            axios({
+                url: '/api/git/repoinfo',
+                method: 'post',
+                data: {
+                    username: this.state.username,
+                    repository: this.state.repo_url
+                },
+                headers: {
+                    Authorization: localStorage.token
+                }
+            })
             .then(res => {
                 console.log(res);
                 console.log(res.data);
@@ -73,7 +92,17 @@ class Monitor extends Component {
                         title: "Git repository is now watched",
                         type: "success"
                     })
-                    axios.post('http://localhost:5000/api/git/commits',user)
+                    axios({
+                        url: '/api/git/commits',
+                        method: 'post',
+                        data: {
+                            username: this.state.username,
+                            repository: this.state.repo_url
+                        },
+                        headers: {
+                            Authorization: localStorage.token
+                        }
+                    })
                     .then(res => {
                         console.log(res);
                         console.log(res.data);
@@ -108,13 +137,26 @@ class Monitor extends Component {
 
     onSubmit(e) {
         swal({
-            title: "Logout Successful",
-            type: "success"
-        }).then(
-         this.props.history.push("/")
-        );
-        localStorage.removeItem('token');
-        this.setState();     
+            title: 'Are you sure?',
+            text: "You won't be able to use the monitor",
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes'
+          }).then((result) => {
+            if (result.value ) {
+                this.props.history.push("/")
+               localStorage.removeItem('token');
+               this.setState();   
+                swal(
+                    'Logged out',
+                    'You have logged out the system',
+                    'success'
+                ).then(
+                );   
+            }
+          })
      }
 
     render(){
@@ -185,6 +227,7 @@ class Monitor extends Component {
 function mapStateToProps(state){
     return {
         profileUsername: state.cookie.username,
+        gitName: state.cookie.gitName,
         profile_img: state.cookie.imgURL
     }
 }

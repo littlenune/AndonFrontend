@@ -33,7 +33,7 @@ class Register extends Component {
         }
 
     // console.log(newUser);
-    axios.post('http://localhost:5000/api/user/register', newUser)
+    axios.post('/api/user/register', newUser)
         .then(
             (res) => {
                 
@@ -48,6 +48,7 @@ class Register extends Component {
                 else {
                 swal({
                     title: "User created",
+                    text: "Please login",
                     type: "success"
                 }).then((res) => {
                     this.props.history.push("/");
