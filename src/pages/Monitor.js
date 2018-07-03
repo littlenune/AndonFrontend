@@ -23,29 +23,87 @@ class Monitor extends Component {
             username: '',
             profileUsername: '',
             gitName: '',
-            profile: [],
-            commit_data: []
+            profile: '',
+            commit_data: '',
+            currrepo: '',
+            current_profile: [],
+            current_commit: [],
+            watch_status: false,
         }
+        // this.getRepo();
         // console.log(this.props.profile_img);
         // console.log(this.state.imgURL);
         // console.log(this.props.gitName);
+        // this.getCurrentRepo();
+
     }
     componentDidMount(){
-        console.log('gitname : ',this.props.gitName);
+        
+    }
+
+    // getRepo(){
+    //     console.log('gitname : ',this.props.gitName);
+    //     axios({
+    //         url: '/api/git/currrepo',
+    //         method: 'post',
+    //         data: {
+    //             username: this.props.gitName,
+    //         },
+    //         headers: {
+    //             Authorization: localStorage.token
+    //         }
+    //     }) .then(res => {
+    //         axios({
+    //             url: '/api/git/repoinfo',
+    //             method: 'post',
+    //             data: {
+    //                 username: this.props.gitName,
+    //                 repository: res.data
+    //             },
+    //             headers: {
+    //                 Authorization: localStorage.token
+    //             }
+    //         }).then(res => {
+    //             const profile = res.data;
+    //             this.setState({ profile});
+    //         }
+    //         );
+    //     });  
+    // }
+
+
+    getCurrentRepo(){
+       
         axios({
-            url: '/api/git/currrepo',
+            url: '/api/git/repoinfo',
             method: 'post',
             data: {
                 username: this.props.gitName,
+                repository: this.state.currrepo
             },
             headers: {
                 Authorization: localStorage.token
             }
-        }) .then(res => {
-            console.log(res.data);
+        }).then(res => {
             const profile = res.data;
             this.setState({ profile});
-        });  
+        }
+        );
+        // axios({
+        //     url: '/api/git/commits',
+        //     method: 'post',
+        //     data: {
+        //         username: this.props.profileUsername,
+        //         repository: this.props.gitName
+        //     },
+        //     headers: {
+        //         Authorization: localStorage.token
+        //     }
+        // })
+        // .then(res => {
+        //     const commit_data = res.data;
+        //     this.setState({ commit_data });
+        // })
     }
     isAuthenticated(){
         const token = localStorage.getItem('token');
@@ -109,6 +167,9 @@ class Monitor extends Component {
                         const commit_data = res.data;
                         this.setState({ commit_data });
                     })
+                    this.setState({
+                        watch_status: true,
+                    })
                 }
             }).catch(err => {
                 console.log(err.data);
@@ -131,6 +192,9 @@ class Monitor extends Component {
                  title: "Git repository has been unwatched",
                  type: "success"
              })
+             this.setState({
+                watch_status: false,
+            })
         }
     }
 }
@@ -146,19 +210,53 @@ class Monitor extends Component {
             confirmButtonText: 'Yes'
           }).then((result) => {
             if (result.value ) {
-                this.props.history.push("/")
                localStorage.removeItem('token');
                this.setState();   
-                swal(
-                    'Logged out',
-                    'You have logged out the system',
-                    'success'
+                swal({
+                    title: 'Logged out',
+                    text: 'You have logged out the system',
+                    type: 'success',
+                    showConfirmButton: false,
+                    timer: 1500
+                }
                 ).then(
+                    this.props.history.push("/")
                 );   
             }
           })
      }
 
+     render_repoInfo(){
+        if( this.state.profile === '' ){
+                 return (
+                     <div>
+                    <p>Username : {this.props.current_profile.username}</p> 
+                    <p>Repository name : {this.props.current_profile.reponame}</p>
+                    <p>Created at : {this.props.current_profile.created_at}</p>
+                    <p>Updated at : {this.props.current_profile.updated_at}</p>
+                    <p>Pushed at : {this.props.current_profile.pushed_at}</p>
+                    <p>Issue : {this.props.current_profile.num_issue}</p>
+                    </div>
+                 );
+        }
+        else {
+            return (
+                <div>
+               <p>Username : {this.state.profile.username}</p> 
+               <p>Repository name : {this.state.profile.reponame}</p>
+               <p>Created at : {this.state.profile.created_at}</p>
+               <p>Updated at : {this.state.profile.updated_at}</p>
+               <p>Pushed at : {this.state.profile.pushed_at}</p>
+               <p>Issue : {this.state.profile.num_issue}</p>
+               </div>
+            );
+        }
+     }
+
+     render_graph(){
+
+     }
+    
     render(){
         const isAlreadyAuthenticated = this.isAuthenticated();
         if( !isAlreadyAuthenticated){
@@ -167,7 +265,7 @@ class Monitor extends Component {
         )
         }
         else {
-
+        
         return (
         <div>
            
@@ -193,12 +291,7 @@ class Monitor extends Component {
         <h2>Repository Information</h2>
         <img className="userImg" src={this.state.profile.image_url} alt="User"/>
         </div>
-        <p>Username : {this.state.profile.username}</p> 
-        <p>Repository name : {this.state.profile.reponame}</p>
-        <p>Created at : {this.state.profile.created_at}</p>
-        <p>Updated at : {this.state.profile.updated_at}</p>
-        <p>Pushed at : {this.state.profile.pushed_at}</p>
-        <p>Issue : {this.state.profile.num_issue}</p>
+        {this.render_repoInfo()}
         </div>
         </div>
             </div>
@@ -228,7 +321,9 @@ function mapStateToProps(state){
     return {
         profileUsername: state.cookie.username,
         gitName: state.cookie.gitName,
-        profile_img: state.cookie.imgURL
+        profile_img: state.cookie.imgURL,
+        current_profile: state.current_repo.profile,
+        current_commit: state.current_repo.commit_data
     }
 }
 

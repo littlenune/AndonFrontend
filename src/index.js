@@ -8,6 +8,7 @@ import App from './App'
 import cookieReducer from './reducers/cookieReducer'
 
 import './index.css';
+import currentRepoReducer from './reducers/currentRepoReducer';
 
 const history = createHistory();
 
@@ -16,6 +17,7 @@ const middleware = routerMiddleware(history);
 const store = createStore(
     combineReducers({
         cookie: cookieReducer,
+        current_repo: currentRepoReducer
     }),
     applyMiddleware(middleware)
 )

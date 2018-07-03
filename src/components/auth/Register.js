@@ -38,13 +38,29 @@ class Register extends Component {
             (res) => {
                 
                 console.log('data: ',res.data)
-                if( res.data.gitName === 'Github username not found'){
+                
+                if( res.data.username === 'This username already exists'){
+                    swal({
+                        title: "Username already exists",
+                        text: "Please choose other name",
+                        type: "error"
+                    })
+                }
+                else if( res.data.gitName === 'Github username not found' || res.data.gitName === "This github username already exists"){
                     swal({
                         title: "Github Username Not found!",
                         text: "Please enter valid github username",
                         type: "error"
                     })
                 }
+                else if( res.data.password2 === 'Password not match'){
+                    swal({
+                        title: "Password not match!",
+                        text: "Please enter password again",
+                        type: "error"
+                    })
+                }
+                
                 else {
                 swal({
                     title: "User created",
@@ -55,8 +71,7 @@ class Register extends Component {
                 })
             }
             })
-        .catch( (err) => {
-            console.log(err.data)
+        .catch( (err) => {            
             swal({
                 title: "Error",
                 text: "Incorrect Information",

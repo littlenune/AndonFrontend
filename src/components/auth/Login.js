@@ -5,6 +5,7 @@ import swal from 'sweetalert2'
 import {Redirect} from 'react-router-dom'
 import addCookie from '../../actions/addCookie';
 import { connect } from 'react-redux'; 
+import addCurrentRepo from '../../actions/addCurrentRepo';
 class Login extends Component {
     constructor() {
         super()
@@ -12,7 +13,8 @@ class Login extends Component {
             username: '',
             password: '',
             redirect: false,
-            profile: []
+            profile: [],
+            commit_data: []
         }
         this.onChange = this.onChange.bind(this)
         this.onSubmit = this.onSubmit.bind(this)
@@ -42,20 +44,23 @@ class Login extends Component {
         })
         .then(
             (res) => {
-                
                 this.props.cookie(res.data.payload.username,res.data.payload.gitName,res.data.payload.imgURL);
-                localStorage.setItem('token', res.data.token);
-            swal({
-                title: "You are logged in",
-                text: "Login successful",
-                type: "success",
-                confirmButtonText: "OK"
+                    localStorage.setItem('token', res.data.token);
+                    this.getCurrentRepo(res.data.payload.gitName);
             })
-            .then((res) => {
+               .then(()=>{
+                swal({
+                    title: "You are logged in",
+                    text: "Login successful",
+                    type: "success",
+                    showConfirmButton: false,
+                    timer: 1500
+                })
+            })
+            .then(()=>{
                 this.props.history.push("/monitor");
             })
-        })
-        .catch((res) => {
+            .catch((res) => {
             console.log(res.data)
             swal({
                 title: "Error",
@@ -64,6 +69,57 @@ class Login extends Component {
                 confirmButtonText: "Try again"
             });
         });
+
+    }
+
+    getCurrentRepo(gitName){
+        console.log("GIT :", gitName);
+        axios({
+            url: '/api/git/currrepo',
+            method: 'post',
+            data: {
+                username: gitName,
+            },
+            headers: {
+                Authorization: localStorage.token
+            }
+        }).then(res => {
+            axios({
+                url: '/api/git/repoinfo',
+                method: 'post',
+                data: {
+                    username: gitName,
+                    repository: res.data
+                },
+                headers: {
+                    Authorization: localStorage.token
+                }
+            }).then(res => {
+                console.log('profile',res.data.reponame);
+                this.getCurrentCommit(gitName,res.data.reponame,res.data);
+            }
+            );
+        });  
+    }
+
+    getCurrentCommit(gitName,repoName,profile){
+        console.log('Gitname',gitName);
+        console.log('reponame',repoName);
+        axios({
+                    url: '/api/git/commits',
+                    method: 'post',
+                    data: {
+                        username: gitName,
+                        repository: repoName
+                    },
+                    headers: {
+                        Authorization: localStorage.token
+                    }
+                })
+                .then(res => {
+                    console.log('commit',res.data);
+                    this.props.current_repo(profile,res.data)
+                })
     }
 
     render() {
@@ -98,9 +154,9 @@ class Login extends Component {
 function mapDispatchToProps(dispatch){
     return {
        cookie: (username,gitName, imgURL) => dispatch(addCookie(username,gitName,imgURL)),
+       current_repo: (profile,commit_data) => dispatch(addCurrentRepo(profile,commit_data))
     }
 }
 
 
 export default connect(null,mapDispatchToProps)(Login);
-// export default (Login);
