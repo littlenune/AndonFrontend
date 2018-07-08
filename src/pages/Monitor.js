@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import axios from 'axios'
 import {Redirect} from 'react-router-dom'
-import { LineChart, Line, CartesianGrid, XAxis, YAxis,Tooltip} from 'recharts';
 import NotificationCard from '../components/NotificationCard';
 import { connect } from 'react-redux'
 import swal from 'sweetalert2';
@@ -9,9 +8,16 @@ import '../stylesheets/search.css';
 import '../stylesheets/sidebar.css';
 import '../stylesheets/dataCard.css';
 import logo from '../res/andon.png';
-
+import BugspotCard from '../components/BugspotCard'
+import DuplicateCard from '../components/DuplicateCard'
+import addDuplicate from '../actions/addDuplicate'
+import addBugspot from '../actions/addBugspot'
+import addComplexity from '../actions/addComplexity'
+import ComplexityCard from '../components/ComplexityCard';
+import FrequencyCommitCard from '../components/FrequencyCommitCard';
 
 class Monitor extends Component {
+    
     constructor(props){
         super(props);
         this.state = {
@@ -21,94 +27,46 @@ class Monitor extends Component {
             repo_url: '',
             imgURL: '../../image-url/'+this.props.profile_img,
             username: '',
-            profileUsername: '',
-            gitName: '',
+            profileUsername: props.profileUsername,
+            gitName: this.props.gitName,
             profile: '',
-            commit_data: '',
-            currrepo: '',
+            commit_data: [],
+            currrepo: this.props.currrepo,
             current_profile: [],
-            current_commit: [],
             watch_status: false,
+            products: [],
+            percent: 0,
+            load_status: false,
+            duplication_status: false,
+            complexity_status: false
         }
-        // this.getRepo();
-        // console.log(this.props.profile_img);
-        // console.log(this.state.imgURL);
-        // console.log(this.props.gitName);
-        // this.getCurrentRepo();
-
-    }
-    componentDidMount(){
-        
+        console.log(this.state.profileUsername);
     }
 
-    // getRepo(){
-    //     console.log('gitname : ',this.props.gitName);
-    //     axios({
-    //         url: '/api/git/currrepo',
-    //         method: 'post',
-    //         data: {
-    //             username: this.props.gitName,
-    //         },
-    //         headers: {
-    //             Authorization: localStorage.token
-    //         }
-    //     }) .then(res => {
-    //         axios({
-    //             url: '/api/git/repoinfo',
-    //             method: 'post',
-    //             data: {
-    //                 username: this.props.gitName,
-    //                 repository: res.data
-    //             },
-    //             headers: {
-    //                 Authorization: localStorage.token
-    //             }
-    //         }).then(res => {
-    //             const profile = res.data;
-    //             this.setState({ profile});
-    //         }
-    //         );
-    //     });  
-    // }
 
-
-    getCurrentRepo(){
-       
-        axios({
-            url: '/api/git/repoinfo',
-            method: 'post',
-            data: {
-                username: this.props.gitName,
-                repository: this.state.currrepo
-            },
-            headers: {
-                Authorization: localStorage.token
-            }
-        }).then(res => {
-            const profile = res.data;
-            this.setState({ profile});
-        }
-        );
-        // axios({
-        //     url: '/api/git/commits',
-        //     method: 'post',
-        //     data: {
-        //         username: this.props.profileUsername,
-        //         repository: this.props.gitName
-        //     },
-        //     headers: {
-        //         Authorization: localStorage.token
-        //     }
-        // })
-        // .then(res => {
-        //     const commit_data = res.data;
-        //     this.setState({ commit_data });
-        // })
-    }
     isAuthenticated(){
         const token = localStorage.getItem('token');
         return token && token.length > 10;
     }
+
+    getCurrentCommit(){
+        axios({
+            url: '/api/git/commits',
+            method: 'post',
+            data: {
+                username: this.state.username,
+                repository: this.state.repo_url
+            },
+            headers: {
+                Authorization: localStorage.token
+            }
+        })
+        .then(res => {
+            console.log('commit jaaaa',res.data);
+            this.setState( {commit_data: res.data} );
+        })
+    }
+
     watchRepo(e){
         if( this.state.username === '' || this.state.repo_url === '' ){
             swal({
@@ -119,6 +77,83 @@ class Monitor extends Component {
         }
         else {
               if(this.state.text === 'Watch'){
+            axios({
+                url: '/api/git/clonerepo',
+                method: 'post',
+                data: {
+                    username: this.state.username,
+                    repository: this.state.repo_url
+                },
+                headers: {
+                    Authorization: localStorage.token
+                }
+            }).then( res => {
+                console.log("CLONE",res.data);
+                if(res.data === 'Finish'){
+                    // this.setState({
+                    //     load_status: true
+                    // })
+                        axios({
+                            url: 'api/analyze/bugspot',
+                            method: 'get',
+                            headers: {
+                                Authorization: localStorage.token
+                            }
+                        }
+                    )
+                    .then((res) => {
+                        console.log("BUGSPOT RES : ",res.data)
+                        if(res.data !== 'Not found commits matching search criteria')
+                        this.props.update_bugspot(res.data)
+                        else {
+                            this.props.update_bugspot('');
+                        }
+                    })
+                    .catch((res) => {
+                        console.log("CATCH",res);
+                    })
+                    axios({
+                        url: 'api/analyze/duplicate',
+                        method: 'get',
+                        headers: {
+                            Authorization: localStorage.token
+                        }
+                    }
+                )
+                .then((res) => {
+                    console.log("DUPLICATE RES : ",res.data)
+                    if(res.data !== 'The jscpd found too many duplicates over threshold'){
+                    this.props.update_duplicate(res.data)
+                    }
+                    else{
+                        this.props.update_duplicate('');
+                    }
+                })
+                .catch((res) => {
+                    console.log("CATCH",res);
+                })
+                axios({
+                    url: 'api/analyze/complexity',
+                    method: 'get',
+                    headers: {
+                        Authorization: localStorage.token
+                    }
+                }).then((res)=>{
+                    console.log("COMPLEXITY RES : ",res.data.resObj.length)
+                    if(res.data.resObj.length !== 0){
+                    this.props.update_complexity(res.data.resObj)
+                    }
+                    else {
+                        this.props.update_complexity('');
+                    }
+                })
+                .catch(res=>{
+                    console.log("CATCH",res)
+                })
+                }
+                
+
+            })
             axios({
                 url: '/api/git/repoinfo',
                 method: 'post',
@@ -146,27 +181,28 @@ class Monitor extends Component {
                     const profile = res.data;
                     this.setState({ profile});
                     this.setState({text: 'Unwatch'})
-                    swal({
-                        title: "Git repository is now watched",
-                        type: "success"
-                    })
-                    axios({
-                        url: '/api/git/commits',
-                        method: 'post',
-                        data: {
-                            username: this.state.username,
-                            repository: this.state.repo_url
+                    // let timerInterval
+                        swal({
+                        title: 'Cloning repository',
+                        html: 'I will close in <strong></strong> seconds.',
+                        timer: 20000,
+                        onOpen: () => {
+                            swal.showLoading()
                         },
-                        headers: {
-                            Authorization: localStorage.token
+                        onClose: () => {
+                            if(this.state.load_status){
+                                clearInterval()
+                            }
                         }
-                    })
-                    .then(res => {
-                        console.log(res);
-                        console.log(res.data);
-                        const commit_data = res.data;
-                        this.setState({ commit_data });
-                    })
+                        }).then((result) => {
+                        if (
+                            // Read more about handling dismissals
+                            result.dismiss === swal.DismissReason.timer
+                        ) {
+                            console.log('I was closed by the timer')
+                        }
+                        })
+                    this.getCurrentCommit();
                     this.setState({
                         watch_status: true,
                     })
@@ -225,39 +261,14 @@ class Monitor extends Component {
             }
           })
      }
-
-     render_repoInfo(){
-        if( this.state.profile === '' ){
-                 return (
-                     <div>
-                    <p>Username : {this.props.current_profile.username}</p> 
-                    <p>Repository name : {this.props.current_profile.reponame}</p>
-                    <p>Created at : {this.props.current_profile.created_at}</p>
-                    <p>Updated at : {this.props.current_profile.updated_at}</p>
-                    <p>Pushed at : {this.props.current_profile.pushed_at}</p>
-                    <p>Issue : {this.props.current_profile.num_issue}</p>
-                    </div>
-                 );
-        }
-        else {
-            return (
-                <div>
-               <p>Username : {this.state.profile.username}</p> 
-               <p>Repository name : {this.state.profile.reponame}</p>
-               <p>Created at : {this.state.profile.created_at}</p>
-               <p>Updated at : {this.state.profile.updated_at}</p>
-               <p>Pushed at : {this.state.profile.pushed_at}</p>
-               <p>Issue : {this.state.profile.num_issue}</p>
-               </div>
-            );
-        }
-     }
-
-     render_graph(){
-
-     }
     
     render(){
+        // window.onbeforeunload = function() {
+        //     localStorage.removeItem('token')
+        //     return '';
+        //   };
+        const isWatched = this.state.watch_status;
+        
         const isAlreadyAuthenticated = this.isAuthenticated();
         if( !isAlreadyAuthenticated){
         return (
@@ -277,21 +288,44 @@ class Monitor extends Component {
                 </div>
              <div className="sidenav">
                 {/* <img id="userImg" src={require(''+this.state.imgURL)}></img> */}
-                <h2>{this.props.profileUsername}</h2>
-                <button id="logoutBtn" onClick= {(e) => this.onSubmit()}>Logout</button>
+                <h2 className="register-text">{this.props.profileUsername}</h2>
+                <a href="#main-section" className="andon-button">Notification Trigger</a>
+                <a href="#frequency-section" className="andon-button">Frequency of commit</a>
+                <a href="#duplicate-section" className="andon-button">Code Duplication</a>
+                <a href="#complexity-section" className="andon-button">Code Complexity</a>
+                <a href="#bugspot-section" className="andon-button">Bugspot Score</a>
+                <button id="logoutBtn" className="andon-button" onClick= {(e) => this.onSubmit()}>Logout</button>
             </div>
                 <div className="parallax">
                 <div className="container">
-            <div className="card">
+            <div  className="card">
             <div>
             <div className="left-container">
        
-        <div className="right-container">
+        <div  className="right-container">
         
         <h2>Repository Information</h2>
         <img className="userImg" src={this.state.profile.image_url} alt="User"/>
         </div>
-        {this.render_repoInfo()}
+        { !isWatched ? (
+             <div>
+             <p>Username : {this.props.current_profile.username}</p> 
+             <p>Repository name : {this.props.current_profile.reponame}</p>
+             <p>Created at : {this.props.current_profile.created_at}</p>
+             <p>Updated at : {this.props.current_profile.updated_at}</p>
+             <p>Pushed at : {this.props.current_profile.pushed_at}</p>
+             <p>Issue : {this.props.current_profile.num_issue}</p>
+             </div>
+        ) : (
+            <div>
+            <p>Username : {this.state.profile.username}</p> 
+            <p>Repository name : {this.state.profile.reponame}</p>
+            <p>Created at : {this.state.profile.created_at}</p>
+            <p>Updated at : {this.state.profile.updated_at}</p>
+            <p>Pushed at : {this.state.profile.pushed_at}</p>
+            <p>Issue : {this.state.profile.num_issue}</p>
+            </div>
+        )}
         </div>
         </div>
             </div>
@@ -301,19 +335,29 @@ class Monitor extends Component {
             </div>
           </div>
                 </div>
-                <div className="parallax-2">  
-                <h2>Frequency of commits</h2>
-                <LineChart width={1500} height={500} data={this.state.commit_data} margin={{ top: 5, right: 20, bottom: 5, left: 0 }}>
-                    <Line type="monotone" dataKey="commit" stroke="#8884d8" />
-                    <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
-                    <XAxis dataKey="name" />
-                    <YAxis />
-                    <Tooltip />
-                </LineChart>             
+                <div id="frequency-section">
+                <FrequencyCommitCard/>
+                </div>
+                <div id="duplicate-section">
+                <DuplicateCard/>
+                </div>
+                <div id="complexity-section">
+                <ComplexityCard/>
+                </div>
+                <div id="bugspot-section">
+                <BugspotCard/>
                 </div>
             </div>
         );
     }
+    }
+}
+
+function mapDispatchToProps(dispatch){
+    return {
+        update_duplicate: (duplicate_data) => dispatch(addDuplicate(duplicate_data)),
+        update_bugspot: (bugspot_data) => dispatch(addBugspot(bugspot_data)),
+        update_complexity: (complexity_data) => dispatch(addComplexity(complexity_data))
     }
 }
 
@@ -327,4 +371,4 @@ function mapStateToProps(state){
     }
 }
 
-export default connect(mapStateToProps)(Monitor);
+export default connect(mapStateToProps,mapDispatchToProps)(Monitor);

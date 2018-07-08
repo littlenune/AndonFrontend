@@ -28,27 +28,23 @@ class NotificationCard extends Component {
     return (
     <div>
     <h1>Notification Trigger</h1>
-                <label className="container-label">Overall health risk
-                <input type="checkbox"/>
-                <span className="checkmark"></span>
-                </label>
-                <label className="container-label">Frequency of commits
-                <input type="checkbox" />
-                <span className="checkmark"></span>
-                </label>
-                <label className="container-label">The score of bugspot
-                <input type="checkbox" />
-                <span className="checkmark"></span>
-                </label>
-                <label className="container-label">Number of issues
-                <input type="checkbox"/>
-                <span className="checkmark"></span>
-                </label>
-                <label className="container-label">Fault-proness
-                <input type="checkbox"/>
-                <span className="checkmark"></span>
-                </label>
-                <button id="submitBtn" onClick={(e)=>this.handleSubmit(e)}>Apply</button>
+        <label className="container">Overall Health
+        <input type="radio" name="radio"/>
+        <span className="checkmark"></span>
+        </label>
+        <label className="container">Frequency of Commits
+        <input type="radio" name="radio"/>
+        <span className="checkmark"></span>
+        </label>
+        <label className="container">Code Duplication
+        <input type="radio" name="radio"/>
+        <span className="checkmark"></span>
+        </label>
+        <label className="container">Complexity of Code
+        <input type="radio" name="radio"/>
+        <span className="checkmark"></span>
+        </label>
+        <button id="submitBtn"  className="andon-button" onClick={(e)=>this.handleSubmit(e)}>Apply</button>
         </div>
     );
     }

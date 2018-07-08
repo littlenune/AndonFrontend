@@ -56,19 +56,16 @@ class Login extends Component {
                     showConfirmButton: false,
                     timer: 1500
                 })
-            })
-            .then(()=>{
-                this.props.history.push("/monitor");
-            })
-            .catch((res) => {
-            console.log(res.data)
-            swal({
-                title: "Error",
-                text: "Wrong username or password",
-                type: "error",
-                confirmButtonText: "Try again"
+            }).catch((res) => {
+                console.log(res.data)
+                swal({
+                    title: "Error",
+                    text: "Wrong username or password",
+                    type: "error",
+                    confirmButtonText: "Try again"
+                });
             });
-        });
+           ;
 
     }
 
@@ -98,7 +95,10 @@ class Login extends Component {
                 console.log('profile',res.data.reponame);
                 this.getCurrentCommit(gitName,res.data.reponame,res.data);
             }
-            );
+            ).then(()=>{
+                
+            })
+           
         });  
     }
 
@@ -118,7 +118,11 @@ class Login extends Component {
                 })
                 .then(res => {
                     console.log('commit',res.data);
-                    this.props.current_repo(profile,res.data)
+                    this.setState({
+                        commit_data: res.data
+                    })
+                    if( res.data!== [])
+                        this.props.current_repo(profile,res.data)
                 })
     }
 

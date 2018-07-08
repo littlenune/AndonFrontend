@@ -9,6 +9,9 @@ import cookieReducer from './reducers/cookieReducer'
 
 import './index.css';
 import currentRepoReducer from './reducers/currentRepoReducer';
+import currentBugspotReducer from './reducers/currentBugspotReducer';
+import { duplicateReducer } from './reducers/duplicateReducer';
+import { complexityReducer } from './reducers/complexityReducer';
 
 const history = createHistory();
 
@@ -17,7 +20,10 @@ const middleware = routerMiddleware(history);
 const store = createStore(
     combineReducers({
         cookie: cookieReducer,
-        current_repo: currentRepoReducer
+        current_repo: currentRepoReducer,
+        update_bugspot: currentBugspotReducer,
+        update_duplicate: duplicateReducer,
+        update_complexity: complexityReducer
     }),
     applyMiddleware(middleware)
 )

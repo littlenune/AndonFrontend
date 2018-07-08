@@ -20,7 +20,7 @@ html, body {
 }
 
 .parallax-2 {
-  background-color: antiquewhite;
+  /* background-color: antiquewhite; */
   height: 1000px;
   padding-top: 5%;
   padding-left: 15%;
@@ -30,7 +30,7 @@ html, body {
   background-size: cover;
 }
 
-button{
+.andon-button{
   font-family: 'Nunito';
   background-color:black;
   border-radius: 5px;
@@ -47,7 +47,7 @@ button{
   border: 2px solid #555555;
 }
 
-button:hover {
+.andon-button:hover {
 background-color: #F9DA4A;
 color: black;
 }
