@@ -84,7 +84,7 @@ class Register extends Component {
         return (
                 <div className="parallax">
                     <form className="register-form"onSubmit = {this.onSubmit}>
-                    <h1>Create Account</h1>
+                    <h1 id="title">Create Account</h1>
                     <h2 className="label">USERNAME</h2>
                     <input type="text" minLength="6" autoComplete="off" placeholder="6 characters minimum" name="username" value={this.state.username} required onChange={this.onChange}></input>
                     <h2 className="label">GITHUB USERNAME  <strong>*ONLY GITHUB USERNAME*</strong></h2>

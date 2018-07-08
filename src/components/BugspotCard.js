@@ -52,7 +52,7 @@ class BugspotCard extends Component {
                           )
                         }       
                 ]}
-                defaultPageSize={10}
+                defaultPageSize={5}
                 style={{
                   height: "600px"
                 }}

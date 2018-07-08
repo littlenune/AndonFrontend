@@ -12,6 +12,7 @@ import currentRepoReducer from './reducers/currentRepoReducer';
 import currentBugspotReducer from './reducers/currentBugspotReducer';
 import { duplicateReducer } from './reducers/duplicateReducer';
 import { complexityReducer } from './reducers/complexityReducer';
+import { frequencyReducer } from './reducers/frequencyReducer';
 
 const history = createHistory();
 
@@ -23,7 +24,8 @@ const store = createStore(
         current_repo: currentRepoReducer,
         update_bugspot: currentBugspotReducer,
         update_duplicate: duplicateReducer,
-        update_complexity: complexityReducer
+        update_complexity: complexityReducer,
+        update_frequency: frequencyReducer
     }),
     applyMiddleware(middleware)
 )

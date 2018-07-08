@@ -5,10 +5,10 @@
 strong {
     color: red;
 }
-h1{
-    color: white;
-}
-
 .register-form {
     padding-left: 25%;
+}
+
+#title{
+    color: white;
 }

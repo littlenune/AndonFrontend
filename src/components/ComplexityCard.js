@@ -35,7 +35,7 @@ class ComplexityCard extends Component {
                    
                  
                 ]}
-                defaultPageSize={10}
+                defaultPageSize={5}
                 style={{
                   height: "600px" // This will force the table body to overflow and scroll, since there is not enough room
                 }}

@@ -15,6 +15,7 @@ import addBugspot from '../actions/addBugspot'
 import addComplexity from '../actions/addComplexity'
 import ComplexityCard from '../components/ComplexityCard';
 import FrequencyCommitCard from '../components/FrequencyCommitCard';
+import addFrequencyCommit from '../actions/addFrequencyCommit';
 
 class Monitor extends Component {
     
@@ -43,7 +44,6 @@ class Monitor extends Component {
         console.log(this.state.profileUsername);
     }
 
-
     isAuthenticated(){
         const token = localStorage.getItem('token');
         return token && token.length > 10;
@@ -62,7 +62,9 @@ class Monitor extends Component {
             }
         })
         .then(res => {
-            console.log('commit jaaaa',res.data);
+            if( true ){
+                this.props.update_frequency(res.data)
+            }           
             this.setState( {commit_data: res.data} );
         })
     }
@@ -231,6 +233,10 @@ class Monitor extends Component {
              this.setState({
                 watch_status: false,
             })
+            this.props.update_bugspot('');
+            this.props.update_complexity('');
+            this.props.update_duplicate('');
+            this.props.update_frequency('');
         }
     }
 }
@@ -287,13 +293,13 @@ class Monitor extends Component {
                     <button className="button" onClick= {(e) => this.watchRepo(e)} >{this.state.text}</button>  
                 </div>
              <div className="sidenav">
-                {/* <img id="userImg" src={require(''+this.state.imgURL)}></img> */}
+                {/* <img id="userImg" src={require(''+this.props.imgURL)}></img> */}
                 <h2 className="register-text">{this.props.profileUsername}</h2>
-                <a href="#main-section" className="andon-button">Notification Trigger</a>
-                <a href="#frequency-section" className="andon-button">Frequency of commit</a>
-                <a href="#duplicate-section" className="andon-button">Code Duplication</a>
-                <a href="#complexity-section" className="andon-button">Code Complexity</a>
-                <a href="#bugspot-section" className="andon-button">Bugspot Score</a>
+                <a href="#main" className="andon-button">Notification Trigger</a>
+                <a href="#frequency" className="andon-button">Frequency of commit</a>
+                <a href="#duplicate" className="andon-button">Code Duplication</a>
+                <a href="#complexity" className="andon-button">Code Complexity</a>
+                <a href="#bugspot" className="andon-button">Bugspot Analyze</a>
                 <button id="logoutBtn" className="andon-button" onClick= {(e) => this.onSubmit()}>Logout</button>
             </div>
                 <div className="parallax">
@@ -305,10 +311,10 @@ class Monitor extends Component {
         <div  className="right-container">
         
         <h2>Repository Information</h2>
-        <img className="userImg" src={this.state.profile.image_url} alt="User"/>
         </div>
         { !isWatched ? (
              <div>
+            <img className="userImg" src={this.props.current_profile.image_url} alt="User"/>
              <p>Username : {this.props.current_profile.username}</p> 
              <p>Repository name : {this.props.current_profile.reponame}</p>
              <p>Created at : {this.props.current_profile.created_at}</p>
@@ -318,6 +324,7 @@ class Monitor extends Component {
              </div>
         ) : (
             <div>
+            <img className="userImg" src={this.state.profile.image_url} alt="User"/>
             <p>Username : {this.state.profile.username}</p> 
             <p>Repository name : {this.state.profile.reponame}</p>
             <p>Created at : {this.state.profile.created_at}</p>
@@ -335,16 +342,16 @@ class Monitor extends Component {
             </div>
           </div>
                 </div>
-                <div id="frequency-section">
+                <div id="frequency">
                 <FrequencyCommitCard/>
                 </div>
-                <div id="duplicate-section">
+                <div id="duplicate">
                 <DuplicateCard/>
                 </div>
-                <div id="complexity-section">
+                <div id="complexity">
                 <ComplexityCard/>
                 </div>
-                <div id="bugspot-section">
+                <div id="bugspot">
                 <BugspotCard/>
                 </div>
             </div>
@@ -357,7 +364,8 @@ function mapDispatchToProps(dispatch){
     return {
         update_duplicate: (duplicate_data) => dispatch(addDuplicate(duplicate_data)),
         update_bugspot: (bugspot_data) => dispatch(addBugspot(bugspot_data)),
-        update_complexity: (complexity_data) => dispatch(addComplexity(complexity_data))
+        update_complexity: (complexity_data) => dispatch(addComplexity(complexity_data)),
+        update_frequency: (frequency_data) => dispatch(addFrequencyCommit(frequency_data))
     }
 }
 
