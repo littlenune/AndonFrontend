@@ -3,6 +3,7 @@ import ReactTable from 'react-table';
 import 'react-table/react-table.css';
 import '../stylesheets/table.css'
 import { connect } from 'react-redux';
+import '../stylesheets/complex.css';
 
 class ComplexityCard extends Component {
     
@@ -11,6 +12,7 @@ class ComplexityCard extends Component {
         if( this.props.complexity_data.length !== 0){
           return (
             <div className="parallax-2">
+            <div className="card-complex">
                 <h2 id="header">Complexity of Code</h2>
               <ReactTable
                 data={this.props.complexity_data}
@@ -35,13 +37,14 @@ class ComplexityCard extends Component {
                    
                  
                 ]}
-                defaultPageSize={5}
+                defaultPageSize={20}
                 style={{
                   height: "600px" // This will force the table body to overflow and scroll, since there is not enough room
                 }}
                 className="-striped -highlight"
               />
               <br />
+              </div>
             </div>
           );
         }else {

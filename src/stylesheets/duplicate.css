@@ -18,14 +18,14 @@ body {
 
 div.b {
   position: absolute;
-  left: 250px;
+  padding: 5%;
   width: 500px;
   height: 350px;
 } 
 
 div.c {
   position: absolute;
-  left: 1000px;
+  left: 800px;
   width: 800px;
   height: 200px;
 } 

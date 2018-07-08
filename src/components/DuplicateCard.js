@@ -23,8 +23,8 @@ class DuplicateCard extends Component {
                 <h2>Lines: {this.props.duplicate_data.lines}</h2>
                 </div>
 
-                <div className="c"> <PieChart width={800} height={400}>
-                    <Pie data={data} cx={500} cy={200} innerRadius={40} outerRadius={80} fill="#82ca9d"/>
+                <div className="c"> <PieChart width={1000} height={1000}>
+                    <Pie data={data} cx={500} cy={500} innerRadius={175} outerRadius={350} fill="#82ca9d"/>
                     <Tooltip/>
                 </PieChart>
                 </div>      

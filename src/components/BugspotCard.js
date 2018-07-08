@@ -13,7 +13,7 @@ class BugspotCard extends Component {
         if( this.props.bugspot_data.length !== 0){
           return (
             <div className="parallax-2">
-              <h2 id="header">BUGSPOT SCORE</h2>
+              <h2 id="header">Bugspot Score Analyze</h2>
               <ReactTable
                 data={this.props.bugspot_data.score}
                 columns={[
@@ -25,34 +25,34 @@ class BugspotCard extends Component {
                         Header: "File",
                         accessor:"file"
                       },
-                      {
-                        Header: 'Profile Progress',
-                        accessor: 'progress',
-                        Cell: row => (
-                          <div
-                            style={{
-                              width: '100%',
-                              height: '100%',
-                              backgroundColor: '#dadada',
-                              borderRadius: '2px'
-                            }}
-                          >
-                            <div
-                              style={{
-                                width: `${this.props.bugspot_data.score*100}%`,
-                                height: '100%',
-                                backgroundColor: (this.props.bugspot_data.score*100) > 66 ? '#85cc00'
-                                  : this.props.bugspot_data.score > 33 ? '#ffbf00'
-                                  : '#ff2e00',
-                                borderRadius: '2px',
-                                transition: 'all .2s ease-out'
-                                }}
-                              />
-                            </div>
-                          )
-                        }       
+                      // {
+                      //   Header: 'Profile Progress',
+                      //   accessor: 'progress',
+                      //   Cell: row => (
+                      //     <div
+                      //       style={{
+                      //         width: '100%',
+                      //         height: '100%',
+                      //         backgroundColor: '#dadada',
+                      //         borderRadius: '2px'
+                      //       }}
+                      //     >
+                      //       <div
+                      //         style={{
+                      //           width: `${this.props.bugspot_data.score*100}%`,
+                      //           height: '100%',
+                      //           backgroundColor: (this.props.bugspot_data.score*100) < 66 ? '#85cc00'
+                      //             : this.props.bugspot_data.score = 0 ? '#ffbf00'
+                      //             : '#ff2e00',
+                      //           borderRadius: '2px',
+                      //           transition: 'all .2s ease-out'
+                      //           }}
+                      //         />
+                      //       </div>
+                      //     )
+                      //   }       
                 ]}
-                defaultPageSize={5}
+                defaultPageSize={20}
                 style={{
                   height: "600px"
                 }}
@@ -64,7 +64,7 @@ class BugspotCard extends Component {
         }else {
           return(
             <div className="parallax-2">
-             <h2 id="header">BUGSPOT SCORE</h2>
+             <h2 id="header">Bugspot Score Analyze</h2>
              <h2>No data shown. Bugspot score calculate the commit with 'fix' message in them.</h2>
             </div>
           );

@@ -1,4 +1,6 @@
 .ReactTable {
-    padding-right: 5%;
-    border: none;
+    /* padding-right: 5%;
+    border: none; */
+    background-color: white;
+    text-align: center;
 }
