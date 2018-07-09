@@ -8,7 +8,7 @@ class DuplicateCard extends Component {
     
 
     render(){
-        console.log("PROP PERCEN",this.props.duplicate_data)
+        console.log('Duplicate Card',this.props.duplicate_data)
         if ( this.props.duplicate_data.length !== 0){
         const data = [ 
             {name: 'Duplicate', value: this.props.duplicate_data.percentage}, 

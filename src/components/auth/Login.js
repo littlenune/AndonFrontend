@@ -70,7 +70,6 @@ class Login extends Component {
     }
 
     getCurrentRepo(gitName){
-        console.log("GIT :", gitName);
         axios({
             url: '/api/git/currrepo',
             method: 'post',
@@ -92,7 +91,7 @@ class Login extends Component {
                     Authorization: localStorage.token
                 }
             }).then(res => {
-                console.log('profile',res.data.reponame);
+                console.log('current profile : ',res.data.reponame);
                 this.getCurrentCommit(gitName,res.data.reponame,res.data);
             }
             ).then(()=>{
@@ -103,8 +102,6 @@ class Login extends Component {
     }
 
     getCurrentCommit(gitName,repoName,profile){
-        console.log('Gitname',gitName);
-        console.log('reponame',repoName);
         axios({
                     url: '/api/git/commits',
                     method: 'post',

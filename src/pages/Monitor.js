@@ -41,7 +41,6 @@ class Monitor extends Component {
             duplication_status: false,
             complexity_status: false
         }
-        console.log(this.state.profileUsername);
     }
 
     isAuthenticated(){
@@ -90,12 +89,12 @@ class Monitor extends Component {
                     Authorization: localStorage.token
                 }
             }).then( res => {
-                console.log("CLONE",res.data);
+                console.log("Clone status : ",res.data);
                 if(res.data === 'Finish'){
                     // this.setState({
                     //     load_status: true
                     // })
-                        axios({
+                    axios({
                             url: 'api/analyze/bugspot',
                             method: 'get',
                             headers: {
@@ -104,7 +103,6 @@ class Monitor extends Component {
                         }
                     )
                     .then((res) => {
-                        console.log("BUGSPOT RES : ",res.data)
                         if(res.data !== 'Not found commits matching search criteria')
                         this.props.update_bugspot(res.data)
                         else {
@@ -112,8 +110,9 @@ class Monitor extends Component {
                         }
                     })
                     .catch((res) => {
-                        console.log("CATCH",res);
+                        console.log("catch",res);
                     })
+                    
                     axios({
                         url: 'api/analyze/duplicate',
                         method: 'get',
@@ -121,19 +120,18 @@ class Monitor extends Component {
                             Authorization: localStorage.token
                         }
                     }
-                )
-                .then((res) => {
-                    console.log("DUPLICATE RES : ",res.data)
-                    if(res.data.message !== 'The jscpd found too many duplicates over threshold'){
-                    this.props.update_duplicate(res.data)
-                    }
-                    else{
-                        this.props.update_duplicate('');
-                    }
-                })
-                .catch((res) => {
-                    console.log("CATCH",res);
-                })
+                    )
+                    .then((res) => {
+                        if(res.data.message !== 'The jscpd found too many duplicates over threshold'){
+                        this.props.update_duplicate(res.data)
+                        }
+                        else{
+                            this.props.update_duplicate('');
+                        }
+                    })
+                    .catch((res) => {
+                        console.log("CATCH",res);
+                    })
                 axios({
                     url: 'api/analyze/complexity',
                     method: 'get',

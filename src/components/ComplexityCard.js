@@ -8,9 +8,8 @@ import '../stylesheets/complex.css';
 class ComplexityCard extends Component {
     
     render() {
-        console.log("PROP COMPLEX",this.props.complexity_data);
+        console.log('Complexity Card',this.props.complexity_data);
         if( this.props.complexity_data.length !== 0){
-          console.log("HERERERERERE");
           return (
             <div className="parallax-2">
             <div className="card-complex">

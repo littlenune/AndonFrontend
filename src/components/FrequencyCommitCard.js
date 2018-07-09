@@ -21,13 +21,9 @@ class FrequencyCommitCard extends Component {
 //       <Tooltip />
 //   </LineChart> 
             render(){
-                console.log("PROP FREQUENCT COMMIT", this.props.current_commit)
-                console.log("HERERERERERE222");
-
-                // if( this.props.current_commit !== 'Information not found' || this.props.current_commit.length !== 0){
-                // console.log(this.props.commit_data);
-                if(this.props.commit_data.length === 0){   
-                console.log("HERE");
+                console.log("BUG",this.props.current_commit)
+            if(this.props.current_commit !== 'Information not found'){
+                if(this.props.commit_data.length === 0   ){   
                     const data = this.props.current_commit;
                 return (
                     <div className="parallax-2"> 
@@ -42,21 +38,27 @@ class FrequencyCommitCard extends Component {
                 </div>
                 );
             }
+                    else {
+                        const data = this.props.commit_data;
+                    return (
+                        <div className="parallax-2"> 
+                        <h2 id="header">Frequency of commit</h2>
+                        <LineChart width={1500} height={700} data={data} margin={{ top: 5, right: 20, bottom: 5, left: 0 }}>
+                        <Line type="monotone" dataKey="commit" stroke="#8884d8" />
+                        <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
+                        <XAxis dataKey="name" />
+                        <YAxis />
+                        <Tooltip />
+                    </LineChart> 
+                    </div>
+                    );
+                }
+            }
             else {
-                console.log("HERE2");
-                const data = this.props.commit_data;
-            return (
-                <div className="parallax-2"> 
-                <h2 id="header">Frequency of commit</h2>
-                <LineChart width={1500} height={700} data={data} margin={{ top: 5, right: 20, bottom: 5, left: 0 }}>
-                <Line type="monotone" dataKey="commit" stroke="#8884d8" />
-                <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
-                <XAxis dataKey="name" />
-                <YAxis />
-                <Tooltip />
-            </LineChart> 
-            </div>
-            );
+                return(
+                    <div>Information Not Found :(</div>
+                )
+            }
             // else {
                 // return (
                 //     <div className="parallax-2">
@@ -71,7 +73,7 @@ class FrequencyCommitCard extends Component {
                 //         <h2>No data shown. Either no commits in your repository or please watch the repository.</h2>
                 //     </div>
                 // );
-            }
+            
         }
 }
 

@@ -9,8 +9,7 @@ class BugspotCard extends Component {
 
 
     render() {
-        console.log("PROP BUGSPOT",this.props.bugspot_data.length);
-        console.log('BUGSPOT', this.props.bugspot_data.score);
+        console.log('Bugspot Card', this.props.bugspot_data.score);
         if( this.props.bugspot_data.length !== 0){
           return (
             <div className="parallax-2">

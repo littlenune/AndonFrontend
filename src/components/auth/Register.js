@@ -32,7 +32,6 @@ class Register extends Component {
             imgURL: this.state.imgURL
         }
 
-    // console.log(newUser);
     axios.post('/api/user/register', newUser)
         .then(
             (res) => {
@@ -47,7 +46,6 @@ class Register extends Component {
                     })
                 }
                 else if( res.data.gitName === 'Github username not found' || res.data.gitName === 'This github username already exists'){
-                    console.log('here');
                     swal({
                         title: "Github Username Already registered or Not found!",
                         text: "Please enter valid or non-register github username",
