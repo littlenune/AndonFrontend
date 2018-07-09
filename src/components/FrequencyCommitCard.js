@@ -22,6 +22,8 @@ class FrequencyCommitCard extends Component {
 //   </LineChart> 
             render(){
                 console.log("PROP FREQUENCT COMMIT", this.props.current_commit)
+                console.log("HERERERERERE222");
+
                 // if( this.props.current_commit !== 'Information not found' || this.props.current_commit.length !== 0){
                 // console.log(this.props.commit_data);
                 if(this.props.commit_data.length === 0){   
@@ -55,6 +57,14 @@ class FrequencyCommitCard extends Component {
             </LineChart> 
             </div>
             );
+            // else {
+                // return (
+                //     <div className="parallax-2">
+                //         <h2 id="header">Frequency Commit</h2>
+                //         <h2>No data show. Duplication of code not found.</h2>
+                //     </div>
+                // );
+            // }
                 // return (
                 //     <div className="parallax-2">
                 //         <h2 id="header">Frequncy of commit</h2>

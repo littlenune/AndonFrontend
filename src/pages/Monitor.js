@@ -124,7 +124,7 @@ class Monitor extends Component {
                 )
                 .then((res) => {
                     console.log("DUPLICATE RES : ",res.data)
-                    if(res.data !== 'The jscpd found too many duplicates over threshold'){
+                    if(res.data.message !== 'The jscpd found too many duplicates over threshold'){
                     this.props.update_duplicate(res.data)
                     }
                     else{

@@ -10,6 +10,7 @@ class BugspotCard extends Component {
 
     render() {
         console.log("PROP BUGSPOT",this.props.bugspot_data.length);
+        console.log('BUGSPOT', this.props.bugspot_data.score);
         if( this.props.bugspot_data.length !== 0){
           return (
             <div className="parallax-2">
@@ -25,34 +26,34 @@ class BugspotCard extends Component {
                         Header: "File",
                         accessor:"file"
                       },
-                      // {
-                      //   Header: 'Profile Progress',
-                      //   accessor: 'progress',
-                      //   Cell: row => (
-                      //     <div
-                      //       style={{
-                      //         width: '100%',
-                      //         height: '100%',
-                      //         backgroundColor: '#dadada',
-                      //         borderRadius: '2px'
-                      //       }}
-                      //     >
-                      //       <div
-                      //         style={{
-                      //           width: `${this.props.bugspot_data.score*100}%`,
-                      //           height: '100%',
-                      //           backgroundColor: (this.props.bugspot_data.score*100) < 66 ? '#85cc00'
-                      //             : this.props.bugspot_data.score = 0 ? '#ffbf00'
-                      //             : '#ff2e00',
-                      //           borderRadius: '2px',
-                      //           transition: 'all .2s ease-out'
-                      //           }}
-                      //         />
-                      //       </div>
-                      //     )
-                      //   }       
+                      {
+                        Header: 'Percentage',
+                        accessor: 'percentage',
+                        Cell: row => (
+                          <div
+                            style={{
+                              width: '100%',
+                              height: '100%',
+                              backgroundColor: '#dadada',
+                              borderRadius: '2px'
+                            }}
+                          >
+                            <div
+                              style={{
+                                width: `${row.value}%`,
+                                height: '100%',
+                                backgroundColor: (row.value) > 66 ? '#ff2e00'
+                                  : row.value > 33 ? '#ffbf00'
+                                  : '#85cc00',
+                                borderRadius: '2px',
+                                transition: 'all .2s ease-out'
+                                }}
+                              />
+                            </div>
+                          )
+                        }       
                 ]}
-                defaultPageSize={20}
+                defaultPageSize={10}
                 style={{
                   height: "600px"
                 }}

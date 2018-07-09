@@ -10,6 +10,7 @@ class ComplexityCard extends Component {
     render() {
         console.log("PROP COMPLEX",this.props.complexity_data);
         if( this.props.complexity_data.length !== 0){
+          console.log("HERERERERERE");
           return (
             <div className="parallax-2">
             <div className="card-complex">
@@ -37,7 +38,7 @@ class ComplexityCard extends Component {
                    
                  
                 ]}
-                defaultPageSize={20}
+                defaultPageSize={10}
                 style={{
                   height: "600px" // This will force the table body to overflow and scroll, since there is not enough room
                 }}
