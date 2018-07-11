@@ -67,11 +67,36 @@ a{
     font-style: normal;
 }
 
-#header-text{
-    font-size: 50px;
-    color: white;
-    /* padding-left: 0%; */
-    margin-left: 36%;
-    padding-top: 5%;
-    /* text-align: center; */
-}
+body {
+    
+    background: #333;
+    padding-top:5em;
+    display: inline-block;
+    justify-content: center;
+  }
+  
+  .typewriter h1 {
+    margin-top:  7.5%;
+    position: fixed;
+    padding-left: 28%;
+    font-size: 60px;
+    color: #fff;
+    overflow: hidden; 
+    border-right: .15em solid transparent; 
+    white-space: nowrap;
+    margin: 10 auto; 
+    letter-spacing: .25em;
+    animation: 
+      typing 3s steps(60,end),
+      blink-caret .5s step-end 10;
+  }
+  
+  @keyframes typing {
+    from { width: 0 }
+    to { width: 700px }
+  }
+  
+  @keyframes blink-caret {
+    from, to { border-color: gray }
+    50% { border-color: transparent }
+  }

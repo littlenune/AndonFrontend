@@ -134,13 +134,12 @@ class Login extends Component {
         else {
         return (
             <div className="parallax">
-            <h1 id="header-text">ANDON MONITOR</h1>
-            <div id="login-div">
-            
+            <div class="typewriter">
+                <h1 id="header-text">ANDON MONITOR</h1>
+            </div>
+            <div id="login-div">            
                 <form onSubmit={this.onSubmit}>
-                {/* <label>Username</label> */}
                     <input  type="text" name="username" required   autoComplete="off" placeholder="Username" onChange={this.onChange}/>
-                {/* <label>Password</label> */}
                     <input  type="password" placeholder="Password" required autoComplete="off"  name="password" value={this.state.password} onChange={this.onChange}></input>
                     <input id="submitBtn" type="submit" value="Login"/>
                 </form>

@@ -44,7 +44,11 @@ class NotificationCard extends Component {
         <input type="radio" name="radio"/>
         <span className="checkmark"></span>
         </label>
-        <button id="submitBtn"  className="andon-button" onClick={(e)=>this.handleSubmit(e)}>Apply</button>
+        <label className="container">Bugspot Score
+        <input type="radio" name="radio"/>
+        <span className="checkmark"></span>
+        </label>
+        <button id="submitBtn"  className="andon-button" onClick={(e)=>this.handleSubmit(e)}>Notify to Andon Model</button>
         </div>
     );
     }
