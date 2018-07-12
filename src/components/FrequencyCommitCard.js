@@ -64,25 +64,16 @@ class FrequencyCommitCard extends Component {
                 }
             }
             }
+         
             else {
-                return(
-                    <div>Information Not Found :(</div>
-                )
+                return (
+                    <div className="parallax-2">
+                        <h2 id="header">Frequncy of commit</h2>
+                        <h2>No data shown. Either no commits in your repository or please watch the repository.</h2>
+                    </div>
+                );
             }
-            // else {
-                // return (
-                //     <div className="parallax-2">
-                //         <h2 id="header">Frequency Commit</h2>
-                //         <h2>No data show. Duplication of code not found.</h2>
-                //     </div>
-                // );
-            // }
-                // return (
-                //     <div className="parallax-2">
-                //         <h2 id="header">Frequncy of commit</h2>
-                //         <h2>No data shown. Either no commits in your repository or please watch the repository.</h2>
-                //     </div>
-                // );
+               
             
         }
 }

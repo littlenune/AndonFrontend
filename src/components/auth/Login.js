@@ -12,7 +12,7 @@ class Login extends Component {
         this.state = {
             username: '',
             password: '',
-            redirect: false,
+            redirect_status: true,
             profile: [],
             commit_data: []
         }
@@ -115,18 +115,23 @@ class Login extends Component {
                 })
                 .then(res => {
                     console.log('commit',res.data);
+                    if(res.data === 'Information Not found'){
+                        this.setState({ redirect_status: false})
+                    }
+                    else {
                     this.setState({
                         commit_data: res.data
                     })
                     if( res.data!== [])
                         this.props.current_repo(profile,res.data)
+                }
                 })
     }
 
     render() {
 
         const isAlreadyAuthenticated = this.isAuthenticated();
-        if( isAlreadyAuthenticated){
+        if( isAlreadyAuthenticated && this.state.redirect_status ){
         return (
             <Redirect to={{ pathname: '/monitor'}}  /> 
         )

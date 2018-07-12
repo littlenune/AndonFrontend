@@ -24,23 +24,23 @@ class NotificationCard extends Component {
     return (
     <div className="notification-container">
     <h1>Notification Trigger</h1>
-        <p className="container">Overall Health
+        <p className="container">Overall Health :
         <input type="radio" name="radio"/>
         <span className="checkmark"></span>
         </p>
-        <label className="container">Frequency of Commits {this.props.freqCommit_status}
+        <label className="container">Frequency of Commits : {this.props.freqCommit_status}
         <input type="radio" name="radio"/>
         <span className="checkmark"></span>
         </label>
-        <label className="container">Code Duplication {this.props.duplicate_status}
+        <label className="container">Code Duplication : {this.props.duplicate_status}
         <input type="radio" name="radio"/>
         <span className="checkmark"></span>
         </label>
-        <label className="container">Complexity of Code {this.props.complex_status}
+        <label className="container">Complexity of Code : {this.props.complex_status}
         <input type="radio" name="radio"/>
         <span className="checkmark"></span>
         </label>
-        <label className="container">Bugspot Score {this.props.bugspot_status}
+        <label className="container">Bugspot Score : {this.props.bugspot_status}
         <input type="radio" name="radio"/>
         <span className="checkmark"></span>
         </label>

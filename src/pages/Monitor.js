@@ -16,6 +16,8 @@ import addComplexity from '../actions/addComplexity'
 import ComplexityCard from '../components/ComplexityCard';
 import FrequencyCommitCard from '../components/FrequencyCommitCard';
 import addFrequencyCommit from '../actions/addFrequencyCommit';
+import { Progress } from 'react-sweet-progress';
+import "react-sweet-progress/lib/style.css";
 
 class Monitor extends Component {
     
@@ -33,7 +35,10 @@ class Monitor extends Component {
             current_profile: [],
             watch_status: false,
             products: [],
-            overall_score: ''
+            overall_score: 0,
+            bugspot_score: 0,
+            complexity_score: 0,
+            duplicate_score: 0
         }
     }
 
@@ -48,15 +53,18 @@ class Monitor extends Component {
             method: 'get',
             headers: {
                 Authorization: localStorage.token
+                }
             }
-        }
-    )
-    .then((res) => {
-        if(res.data.message !== 'Not found commits matching search criteria'){
-            console.log("**",res.data);
-
-            console.log("Score",res.data.score)
+        ).then((res) => {
+            if(res.data.message !== 'Not found commits matching search criteria'){
+            console.log("**",res.data.overallhealth);
+            console.log("Score",res.data.overallHealth)
         this.props.update_bugspot(res.data.score,'available')
+        console.log("1",res.data.overallHealth)
+        this.setState({
+            overall_score: this.state.overall_score + res.data.overallHealth,
+            bugspot_score: res.data.overallHealth
+        })
         }
         else {
             this.props.update_bugspot('','unavailable');
@@ -75,9 +83,15 @@ class Monitor extends Component {
                 Authorization: localStorage.token
             }
         }).then((res)=>{
+            console.log('overall complex:',res.data.overallHealth)
             console.log("COMPLEXITY RES : ",res.data.resObj.length)
             if(res.data.resObj.length !== 0){
             this.props.update_complexity(res.data.resObj,'available')
+            console.log("2",res.data.overallHealth)
+            this.setState({
+                overall_score: this.state.overall_score + res.data.overallHealth,
+                complexity_score: res.data.overallHealth
+            })
             }
             else {
                 this.props.update_complexity('','unavailable');
@@ -131,6 +145,11 @@ class Monitor extends Component {
         .then((res) => {
             if(res.data.message !== 'The jscpd found too many duplicates over threshold'){
             this.props.update_duplicate(res.data,'available')
+            console.log("3",res.data.overallHealth)
+            this.setState({
+                overall_score: this.state.overall_score + res.data.overallHealth,
+                duplicate_score: res.data.overallHealth
+            })
             }
             else{
                 this.props.update_duplicate('','unavailable');
@@ -141,7 +160,7 @@ class Monitor extends Component {
         })
     }
 
-    getCurrentCommit(){
+    updateFreqCom(){
         axios({
             url: '/api/git/commits',
             method: 'post',
@@ -154,8 +173,8 @@ class Monitor extends Component {
             }
         })
         .then(res => {
-            this.props.update_frequency(res.data,'available')      
-            this.setState( {commit_data: res.data} );
+            console.log("4",res.data)
+            this.props.update_frequency(res.data,'available')
         })
     }
 
@@ -199,7 +218,7 @@ class Monitor extends Component {
                         const profile = res.data;
                         this.setState({ profile});
                         this.setState({text: 'Unwatch'})
-                        this.getCurrentCommit();
+                        this.updateFreqCom();
                         this.setState({
                             watch_status: true,
                         })
@@ -209,47 +228,39 @@ class Monitor extends Component {
                 }).catch(err => {
                     console.log(err.data);
                 })
-
-                 
+            }
            
-                
-
-
-                    
-                 
-            
-             
-                
-
-            
-            
+            if(this.state.text === 'Unwatch'){
+                this.setState( {disabled: !this.state.disabled});
+                document.getElementById("search-bar1").value = "";
+                document.getElementById("search-bar2").value = "";
+                this.setState({
+                    username: '',
+                    repo_url: '',
+                    commit_data: [],
+                    profile: [],
+                    text: 'Watch'
+                })
+                swal({
+                    title: "Git repository has been unwatched",
+                    type: "success"
+                })
+                this.setState({
+                    watch_status: false,
+                })
+                console.log("HERE");
+                this.props.update_bugspot('','no data');
+                this.props.update_complexity('','no data');
+                this.props.update_duplicate('','no data');
+                this.props.update_frequency('','no data');
+                this.setState({
+                    overall_score: 0,
+                    bugspot_score: 0,
+                    duplicate_score: 0,
+                    complexity_score: 0
+                })
+            }
         }
-           
-         if(this.state.text === 'Unwatch'){
-            this.setState( {disabled: !this.state.disabled});
-            document.getElementById("search-bar1").value = "";
-            document.getElementById("search-bar2").value = "";
-            this.setState({
-                username: '',
-                repo_url: '',
-                commit_data: [],
-                profile: [],
-                text: 'Watch'
-            })
-             swal({
-                 title: "Git repository has been unwatched",
-                 type: "success"
-             })
-             this.setState({
-                watch_status: false,
-            })
-            console.log("HERE");
-            this.props.update_bugspot('','no data');
-            this.props.update_complexity('','no data');
-            this.props.update_duplicate('','no data');
-            this.props.update_frequency('','no data');
-        }
-    }
     }
 
 
@@ -306,7 +317,7 @@ class Monitor extends Component {
                     <button className="button" onClick= {(e) => this.watchRepo(e)} >{this.state.text}</button>  
                 </div>
              <div className="sidenav">
-
+                <h2>Welcome</h2>
                 {/* <img id="userImg" src={require('${image_path}')}></img> */}
                 <h2 className="register-text">{this.props.profileUsername}</h2>
                 <a href="#main" className="andon-button">Notification Trigger</a>
@@ -324,7 +335,7 @@ class Monitor extends Component {
        
         <div  className="right-container">
         
-        <h2>Repository Information</h2>
+        <h1>Repository Information</h1>
         </div>
         { !isWatched ? (
              <div>
@@ -353,6 +364,18 @@ class Monitor extends Component {
             <div className="card">
            
             <NotificationCard/>
+            </div>
+            <div className="card">
+            <h1>Overall Health Score</h1>
+                {/* <Progress
+                type="circle"
+                percent={this.state.overall_score}
+                /> */}
+                <p>Code Duplication score : {this.state.duplicate_score}</p>
+                <p>Code Complexity score : {this.state.complexity_score}</p>
+                <p>Bugspot Analyze score : {this.state.bugspot_score}</p>
+
+                <p>Total Score : {this.state.overall_score}</p>
             </div>
           </div>
                 </div>
