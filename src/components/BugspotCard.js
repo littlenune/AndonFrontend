@@ -7,15 +7,13 @@ import { connect } from 'react-redux';
 
 class BugspotCard extends Component {
 
-
     render() {
-        console.log('Bugspot Card', this.props.bugspot_data.score);
         if( this.props.bugspot_data.length !== 0){
           return (
             <div className="parallax-2">
               <h2 id="header">Bugspot Score Analyze</h2>
               <ReactTable
-                data={this.props.bugspot_data.score}
+                data={this.props.bugspot_data}
                 columns={[
                       {
                         Header: "Score",

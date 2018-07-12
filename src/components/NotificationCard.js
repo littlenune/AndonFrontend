@@ -2,17 +2,12 @@ import React, {Component} from 'react';
 import '../stylesheets/notification.css';
 import swal from 'sweetalert2'
 // import Axios from 'axios';
+import {connect} from 'react-redux'
 
 class NotificationCard extends Component {
     constructor(props){
         super(props);
-        this.state = {
-            overall_health: true,
-            freq_commit : true,
-            bugspot_score : true,
-            num_issues : true,
-            fault_proness : true
-        };
+       
     }
 
     handleSubmit(e){
@@ -25,26 +20,27 @@ class NotificationCard extends Component {
           })
     }
     render(){
+        console.log('NOTIFICATION',this.props.status)
     return (
-    <div>
+    <div className="notification-container">
     <h1>Notification Trigger</h1>
-        <label className="container">Overall Health
+        <p className="container">Overall Health
+        <input type="radio" name="radio"/>
+        <span className="checkmark"></span>
+        </p>
+        <label className="container">Frequency of Commits {this.props.freqCommit_status}
         <input type="radio" name="radio"/>
         <span className="checkmark"></span>
         </label>
-        <label className="container">Frequency of Commits
+        <label className="container">Code Duplication {this.props.duplicate_status}
         <input type="radio" name="radio"/>
         <span className="checkmark"></span>
         </label>
-        <label className="container">Code Duplication
+        <label className="container">Complexity of Code {this.props.complex_status}
         <input type="radio" name="radio"/>
         <span className="checkmark"></span>
         </label>
-        <label className="container">Complexity of Code
-        <input type="radio" name="radio"/>
-        <span className="checkmark"></span>
-        </label>
-        <label className="container">Bugspot Score
+        <label className="container">Bugspot Score {this.props.bugspot_status}
         <input type="radio" name="radio"/>
         <span className="checkmark"></span>
         </label>
@@ -54,4 +50,15 @@ class NotificationCard extends Component {
     }
 }
 
-export default NotificationCard;
+function mapStateToProps(state){
+    return {
+        freqCommit_status : state.update_frequency.status,
+        duplicate_status: state.update_duplicate.status,
+        complex_status: state.update_complexity.status,
+        bugspot_status: state.update_bugspot.status
+
+    }
+}
+
+
+export default connect(mapStateToProps)(NotificationCard);

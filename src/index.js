@@ -25,7 +25,7 @@ const store = createStore(
         update_bugspot: currentBugspotReducer,
         update_duplicate: duplicateReducer,
         update_complexity: complexityReducer,
-        update_frequency: frequencyReducer
+        update_frequency: frequencyReducer,
     }),
     applyMiddleware(middleware)
 )

@@ -28,24 +28,117 @@ class Monitor extends Component {
             repo_url: '',
             imgURL: '../../image-url/'+this.props.profile_img,
             username: '',
-            profileUsername: props.profileUsername,
-            gitName: this.props.gitName,
             profile: '',
             commit_data: [],
-            currrepo: this.props.currrepo,
             current_profile: [],
             watch_status: false,
             products: [],
-            percent: 0,
-            load_status: false,
-            duplication_status: false,
-            complexity_status: false
+            overall_score: ''
         }
     }
 
     isAuthenticated(){
         const token = localStorage.getItem('token');
         return token && token.length > 10;
+    }
+
+    updateBugspotFunction(){
+        axios({
+            url: 'api/analyze/bugspot',
+            method: 'get',
+            headers: {
+                Authorization: localStorage.token
+            }
+        }
+    )
+    .then((res) => {
+        if(res.data.message !== 'Not found commits matching search criteria'){
+            console.log("**",res.data);
+
+            console.log("Score",res.data.score)
+        this.props.update_bugspot(res.data.score,'available')
+        }
+        else {
+            this.props.update_bugspot('','unavailable');
+        }
+    })
+    .catch((res) => {
+        console.log("catch",res);
+    })
+    }
+
+    updateComplexityFunction(){
+        axios({
+            url: 'api/analyze/complexity',
+            method: 'get',
+            headers: {
+                Authorization: localStorage.token
+            }
+        }).then((res)=>{
+            console.log("COMPLEXITY RES : ",res.data.resObj.length)
+            if(res.data.resObj.length !== 0){
+            this.props.update_complexity(res.data.resObj,'available')
+            }
+            else {
+                this.props.update_complexity('','unavailable');
+            }
+        })
+        .catch(res=>{
+            console.log("CATCH",res)
+        })
+        
+    }
+
+    cloneRepoFunction(){
+        swal({
+            title: 'Cloning Repository',
+            text: 'Cloning...',
+            onOpen: ()=> {
+                swal.showLoading();
+                console.log("HERE");
+                axios({
+                    url: '/api/git/clonerepo',
+                    method: 'post',
+                    data: {
+                        username: this.state.username,
+                        repository: this.state.repo_url
+                    },
+                    headers: {
+                      Authorization: localStorage.token
+                  }
+                }).then( res => {
+                    console.log("STATUS",res.data);
+                    this.updateBugspotFunction(),
+                    this.updateComplexityFunction(),
+                    this.updateDuplicateFunction()
+                    if(res.data === 'Finish'){
+                        swal.close();
+                    }
+                  })
+            }
+        })
+    }
+
+    updateDuplicateFunction(){
+        axios({
+            url: 'api/analyze/duplicate',
+            method: 'get',
+            headers: {
+                Authorization: localStorage.token
+            }
+        }
+        )
+        .then((res) => {
+            if(res.data.message !== 'The jscpd found too many duplicates over threshold'){
+            this.props.update_duplicate(res.data,'available')
+            }
+            else{
+                this.props.update_duplicate('','unavailable');
+            }
+        })
+        .catch((res) => {
+            console.log("CATCH",res);
+        })
     }
 
     getCurrentCommit(){
@@ -61,14 +154,13 @@ class Monitor extends Component {
             }
         })
         .then(res => {
-            if( true ){
-                this.props.update_frequency(res.data)
-            }           
+            this.props.update_frequency(res.data,'available')      
             this.setState( {commit_data: res.data} );
         })
     }
 
     watchRepo(e){
+
         if( this.state.username === '' || this.state.repo_url === '' ){
             swal({
                 title: "Information Required!",
@@ -78,141 +170,61 @@ class Monitor extends Component {
         }
         else {
               if(this.state.text === 'Watch'){
-            axios({
-                url: '/api/git/clonerepo',
-                method: 'post',
-                data: {
-                    username: this.state.username,
-                    repository: this.state.repo_url
-                },
-                headers: {
-                    Authorization: localStorage.token
-                }
-            }).then( res => {
-                console.log("Clone status : ",res.data);
-                if(res.data === 'Finish'){
-                    // this.setState({
-                    //     load_status: true
-                    // })
-                    axios({
-                            url: 'api/analyze/bugspot',
-                            method: 'get',
-                            headers: {
-                                Authorization: localStorage.token
-                            }
-                        }
-                    )
-                    .then((res) => {
-                        if(res.data !== 'Not found commits matching search criteria')
-                        this.props.update_bugspot(res.data)
-                        else {
-                            this.props.update_bugspot('');
-                        }
-                    })
-                    .catch((res) => {
-                        console.log("catch",res);
-                    })
-                    
-                    axios({
-                        url: 'api/analyze/duplicate',
-                        method: 'get',
-                        headers: {
-                            Authorization: localStorage.token
-                        }
-                    }
-                    )
-                    .then((res) => {
-                        if(res.data.message !== 'The jscpd found too many duplicates over threshold'){
-                        this.props.update_duplicate(res.data)
-                        }
-                        else{
-                            this.props.update_duplicate('');
-                        }
-                    })
-                    .catch((res) => {
-                        console.log("CATCH",res);
-                    })
+
                 axios({
-                    url: 'api/analyze/complexity',
-                    method: 'get',
+                    url: '/api/git/repoinfo',
+                    method: 'post',
+                    data: {
+                        username: this.state.username,
+                        repository: this.state.repo_url
+                    },
                     headers: {
                         Authorization: localStorage.token
                     }
-                }).then((res)=>{
-                    console.log("COMPLEXITY RES : ",res.data.resObj.length)
-                    if(res.data.resObj.length !== 0){
-                    this.props.update_complexity(res.data.resObj)
-                    }
-                    else {
-                        this.props.update_complexity('');
-                    }
                 })
-                .catch(res=>{
-                    console.log("CATCH",res)
+                .then(res => {
+                    console.log(res);
+                    console.log(res.data);
+                    if (res.data === 'Information not found'){
+                        swal({
+                            title: "Username or Repository name not found",
+                            text: "Please enter valid username or organization name and repository name",
+                            type: "error",
+                        });
+                        console.log("HERE1");
+                    }
+                    else { 
+                        window.scrollTo(0, 0);
+                        this.setState( {disabled: !this.state.disabled});
+                        const profile = res.data;
+                        this.setState({ profile});
+                        this.setState({text: 'Unwatch'})
+                        this.getCurrentCommit();
+                        this.setState({
+                            watch_status: true,
+                        })
+                        this.cloneRepoFunction();
+                        console.log("HERE2");
+                    }
+                }).catch(err => {
+                    console.log(err.data);
                 })
-                }
+
+                 
+           
                 
 
-            })
-            axios({
-                url: '/api/git/repoinfo',
-                method: 'post',
-                data: {
-                    username: this.state.username,
-                    repository: this.state.repo_url
-                },
-                headers: {
-                    Authorization: localStorage.token
-                }
-            })
-            .then(res => {
-                console.log(res);
-                console.log(res.data);
-                if (res.data === 'Information not found'){
-                    swal({
-                        title: "Username or Repository name not found",
-                        text: "Please enter valid username or organization name and repository name",
-                        type: "error",
-                    });
-                }
-                else { 
-                    window.scrollTo(0, 0);
-                    this.setState( {disabled: !this.state.disabled});
-                    const profile = res.data;
-                    this.setState({ profile});
-                    this.setState({text: 'Unwatch'})
-                    // let timerInterval
-                        swal({
-                        title: 'Cloning repository',
-                        html: 'I will close in <strong></strong> seconds.',
-                        timer: 20000,
-                        onOpen: () => {
-                            swal.showLoading()
-                        },
-                        onClose: () => {
-                            if(this.state.load_status){
-                                clearInterval()
-                            }
-                        }
-                        }).then((result) => {
-                        if (
-                            // Read more about handling dismissals
-                            result.dismiss === swal.DismissReason.timer
-                        ) {
-                            console.log('I was closed by the timer')
-                        }
-                        })
-                    this.getCurrentCommit();
-                    this.setState({
-                        watch_status: true,
-                    })
-                }
-            }).catch(err => {
-                console.log(err.data);
-            })
-           
-        }
 
+                    
+                 
+            
+             
+                
+
+            
+            
+        }
+           
          if(this.state.text === 'Unwatch'){
             this.setState( {disabled: !this.state.disabled});
             document.getElementById("search-bar1").value = "";
@@ -231,13 +243,15 @@ class Monitor extends Component {
              this.setState({
                 watch_status: false,
             })
-            this.props.update_bugspot('');
-            this.props.update_complexity('');
-            this.props.update_duplicate('');
-            this.props.update_frequency('');
+            console.log("HERE");
+            this.props.update_bugspot('','no data');
+            this.props.update_complexity('','no data');
+            this.props.update_duplicate('','no data');
+            this.props.update_frequency('','no data');
         }
     }
-}
+    }
+
 
     onSubmit(e) {
         swal({
@@ -280,7 +294,8 @@ class Monitor extends Component {
         )
         }
         else {
-        
+            // const image_path = '../../image-url/' + this.props.imgURL
+            // console.log('IMAGE NAME',imageName);
         return (
         <div>
            
@@ -291,7 +306,8 @@ class Monitor extends Component {
                     <button className="button" onClick= {(e) => this.watchRepo(e)} >{this.state.text}</button>  
                 </div>
              <div className="sidenav">
-                {/* <img id="userImg" src={require(''+this.props.imgURL)}></img> */}
+
+                {/* <img id="userImg" src={require('${image_path}')}></img> */}
                 <h2 className="register-text">{this.props.profileUsername}</h2>
                 <a href="#main" className="andon-button">Notification Trigger</a>
                 <a href="#frequency" className="andon-button">Frequency of commit</a>
@@ -360,10 +376,10 @@ class Monitor extends Component {
 
 function mapDispatchToProps(dispatch){
     return {
-        update_duplicate: (duplicate_data) => dispatch(addDuplicate(duplicate_data)),
-        update_bugspot: (bugspot_data) => dispatch(addBugspot(bugspot_data)),
-        update_complexity: (complexity_data) => dispatch(addComplexity(complexity_data)),
-        update_frequency: (frequency_data) => dispatch(addFrequencyCommit(frequency_data))
+        update_duplicate: (duplicate_data,status) => dispatch(addDuplicate(duplicate_data,status)),
+        update_bugspot: (bugspot_data,status) => dispatch(addBugspot(bugspot_data,status)),
+        update_complexity: (complexity_data,status) => dispatch(addComplexity(complexity_data,status)),
+        update_frequency: (frequency_data,status) => dispatch(addFrequencyCommit(frequency_data,status))
     }
 }
 

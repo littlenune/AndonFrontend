@@ -9,6 +9,7 @@ class ComplexityCard extends Component {
     
     render() {
         console.log('Complexity Card',this.props.complexity_data);
+        console.log('COMPLEXITY STATUS',this.props.status);
         if( this.props.complexity_data.length !== 0){
           return (
             <div className="parallax-2">
@@ -60,7 +61,8 @@ class ComplexityCard extends Component {
 
 function mapStateToProps(state){
     return {
-        complexity_data: state.update_complexity.complexity_data
+        complexity_data: state.update_complexity.complexity_data,
+        status : state.update_complexity.status
     }
 }
 

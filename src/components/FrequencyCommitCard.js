@@ -23,8 +23,10 @@ class FrequencyCommitCard extends Component {
             render(){
                 console.log("BUG",this.props.current_commit)
             if(this.props.current_commit !== 'Information not found'){
-                if(this.props.commit_data.length === 0   ){   
+                if(this.props.commit_data.length === 0   ){ 
+                    console.log("CURRENT COMMIT")  
                     const data = this.props.current_commit;
+                    console.log("CURRENT ",this.props)
                 return (
                     <div className="parallax-2"> 
                     <h2 id="header">Frequency of Commit</h2>
@@ -39,7 +41,14 @@ class FrequencyCommitCard extends Component {
                 );
             }
                     else {
+                        console.log("COMMIT DATA")
                         const data = this.props.commit_data;
+                        console.log(this.props.commit_data);
+                        if( this.props.commit_data === 'Information not found'){
+                            console.log("GIT LIMIT =0=")
+                            return <div></div>
+                        }
+                        else {
                     return (
                         <div className="parallax-2"> 
                         <h2 id="header">Frequency of commit</h2>
@@ -53,6 +62,7 @@ class FrequencyCommitCard extends Component {
                     </div>
                     );
                 }
+            }
             }
             else {
                 return(

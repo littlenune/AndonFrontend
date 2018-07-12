@@ -54,7 +54,7 @@ class Login extends Component {
                     text: "Login successful",
                     type: "success",
                     showConfirmButton: false,
-                    timer: 1500
+                    timer: 2500
                 })
             }).catch((res) => {
                 console.log(res.data)
@@ -134,7 +134,7 @@ class Login extends Component {
         else {
         return (
             <div className="parallax">
-            <div class="typewriter">
+            <div className="typewriter">
                 <h1 id="header-text">ANDON MONITOR</h1>
             </div>
             <div id="login-div">            
@@ -157,6 +157,8 @@ function mapDispatchToProps(dispatch){
        current_repo: (profile,commit_data) => dispatch(addCurrentRepo(profile,commit_data))
     }
 }
+
+
 
 
 export default connect(null,mapDispatchToProps)(Login);
