@@ -18,6 +18,9 @@ import FrequencyCommitCard from '../components/FrequencyCommitCard';
 import addFrequencyCommit from '../actions/addFrequencyCommit';
 import { Progress } from 'react-sweet-progress';
 import "react-sweet-progress/lib/style.css";
+import addOutdated from '../actions/addOutdated';
+import OutdatedCard from '../components/OutdatedCard';
+import OverallHealthCard from '../components/OverallHealthCard';
 
 class Monitor extends Component {
     
@@ -38,7 +41,8 @@ class Monitor extends Component {
             overall_score: 0,
             bugspot_score: 0,
             complexity_score: 0,
-            duplicate_score: 0
+            duplicate_score: 0,
+            outdated_score: 0
         }
     }
 
@@ -125,6 +129,7 @@ class Monitor extends Component {
                     this.updateBugspotFunction(),
                     this.updateComplexityFunction(),
                     this.updateDuplicateFunction()
+                    this.updateOutdatedFunction()
                     if(res.data === 'Finish'){
                         swal.close();
                     }
@@ -157,6 +162,26 @@ class Monitor extends Component {
         })
         .catch((res) => {
             console.log("CATCH",res);
+        })
+    }
+
+    updateOutdatedFunction(){
+        axios({
+            url: 'api/analyze/outdated',
+            method: 'get',
+            headers: {
+                Authorization: localStorage.token
+            }
+        }).then((res)=> {
+            console.log('outdated result',res.data);
+            if(res.data.message !== 'A package.json was not found'){
+            this.props.update_outdated(res.data.resultObj,'available')
+            }
+            else {
+                this.props.update_outdated('','unavailable')
+            }
+        }).catch((res) => {
+            console.log("OUTDATE CATCH",res)
         })
     }
 
@@ -253,11 +278,13 @@ class Monitor extends Component {
                 this.props.update_complexity('','no data');
                 this.props.update_duplicate('','no data');
                 this.props.update_frequency('','no data');
+                this.props.update_outdated('','no data');
                 this.setState({
                     overall_score: 0,
                     bugspot_score: 0,
                     duplicate_score: 0,
-                    complexity_score: 0
+                    complexity_score: 0,
+                    outdated_score: 0
                 })
             }
         }
@@ -325,6 +352,7 @@ class Monitor extends Component {
                 <a href="#duplicate" className="andon-button">Code Duplication</a>
                 <a href="#complexity" className="andon-button">Code Complexity</a>
                 <a href="#bugspot" className="andon-button">Bugspot Analyze</a>
+                <a href="#outdated" className="andon-button">Outdated Library</a>
                 <button id="logoutBtn" className="andon-button" onClick= {(e) => this.onSubmit()}>Logout</button>
             </div>
                 <div className="parallax">
@@ -365,18 +393,7 @@ class Monitor extends Component {
            
             <NotificationCard/>
             </div>
-            <div className="card">
-            <h1>Overall Health Score</h1>
-                {/* <Progress
-                type="circle"
-                percent={this.state.overall_score}
-                /> */}
-                <p>Code Duplication score : {this.state.duplicate_score}</p>
-                <p>Code Complexity score : {this.state.complexity_score}</p>
-                <p>Bugspot Analyze score : {this.state.bugspot_score}</p>
-
-                <p>Total Score : {this.state.overall_score}</p>
-            </div>
+           <OverallHealthCard/>
           </div>
                 </div>
                 <div id="frequency">
@@ -391,6 +408,9 @@ class Monitor extends Component {
                 <div id="bugspot">
                 <BugspotCard/>
                 </div>
+                <div id="outdated">
+                <OutdatedCard/>
+                </div>
             </div>
         );
     }
@@ -402,7 +422,8 @@ function mapDispatchToProps(dispatch){
         update_duplicate: (duplicate_data,status) => dispatch(addDuplicate(duplicate_data,status)),
         update_bugspot: (bugspot_data,status) => dispatch(addBugspot(bugspot_data,status)),
         update_complexity: (complexity_data,status) => dispatch(addComplexity(complexity_data,status)),
-        update_frequency: (frequency_data,status) => dispatch(addFrequencyCommit(frequency_data,status))
+        update_frequency: (frequency_data,status) => dispatch(addFrequencyCommit(frequency_data,status)),
+        update_outdated: (outdated_data, status) => dispatch(addOutdated(outdated_data,status))
     }
 }
 

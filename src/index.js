@@ -13,6 +13,7 @@ import currentBugspotReducer from './reducers/currentBugspotReducer';
 import { duplicateReducer } from './reducers/duplicateReducer';
 import { complexityReducer } from './reducers/complexityReducer';
 import { frequencyReducer } from './reducers/frequencyReducer';
+import { outdatedReducer } from './reducers/outdatedReducer';
 
 const history = createHistory();
 
@@ -26,6 +27,7 @@ const store = createStore(
         update_duplicate: duplicateReducer,
         update_complexity: complexityReducer,
         update_frequency: frequencyReducer,
+        update_outdated: outdatedReducer
     }),
     applyMiddleware(middleware)
 )
