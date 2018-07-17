@@ -17,12 +17,8 @@ class NotificationCard extends Component {
     }
     render(){
     return (
-    <div className="notification-container">
+    <div className="notification-con">
     <h1>Notification Trigger</h1>
-        <p className="container">Overall Health :
-        <input type="radio" name="radio"/>
-        <span className="checkmark"></span>
-        </p>
         <label className="container">Frequency of Commits : {this.props.freqCommit_status}
         <input type="radio" name="radio"/>
         <span className="checkmark"></span>
@@ -39,6 +35,10 @@ class NotificationCard extends Component {
         <input type="radio" name="radio"/>
         <span className="checkmark"></span>
         </label>
+        <label className="container">Outdated Library : {this.props.outdated_status}
+        <input type="radio" name="radio"/>
+        <span className="checkmark"></span>
+        </label>
         <button id="submitBtn"  className="andon-button" onClick={(e)=>this.handleSubmit(e)}>Notify to Andon Model</button>
         </div>
     );
@@ -50,7 +50,8 @@ function mapStateToProps(state){
         freqCommit_status : state.update_frequency.status,
         duplicate_status: state.update_duplicate.status,
         complex_status: state.update_complexity.status,
-        bugspot_status: state.update_bugspot.status
+        bugspot_status: state.update_bugspot.status,
+        outdated_status: state.update_outdated.status
 
     }
 }

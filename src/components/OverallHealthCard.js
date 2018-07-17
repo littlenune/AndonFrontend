@@ -9,8 +9,8 @@ class OverallHealthCard extends Component {
     render(){
         if( this.props.watch_status ){
         return(
-
-            <div className="card">
+            
+            <div className="health-con">
             <h1>Overall Health Score</h1>
                 <Progress
                 type="circle"
@@ -24,24 +24,15 @@ class OverallHealthCard extends Component {
             </div>
         )
     }
-    else {
-        return (
-            <div className="card">
-            <h1>Overall Health Score</h1>
-            <p>No overall health score.</p> 
-            </div>
-        )
+        else {
+            return (
+                <div className="health-con">
+                <h1>Overall Health Score</h1>
+                <p>No overall health score.</p> 
+                </div>
+            )
+        }
     }
-    
-    // }
-    // else {
-    //     return (
-    //         <div>
-    //             </div>
-    //     )
-    // }
-    }
-    
 }
 
 function mapStateToProps(state){

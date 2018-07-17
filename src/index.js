@@ -16,6 +16,7 @@ import { frequencyReducer } from './reducers/frequencyReducer';
 import { outdatedReducer } from './reducers/outdatedReducer';
 import { statusReducer } from './reducers/statusReducer';
 import { scoreReducer } from './reducers/scoreReducer';
+import { watchRepoReducer } from './reducers/watchRepoReducer';
 
 const history = createHistory();
 
@@ -31,7 +32,8 @@ const store = createStore(
         update_frequency: frequencyReducer,
         update_outdated: outdatedReducer,
         update_status: statusReducer,
-        update_score: scoreReducer
+        update_score: scoreReducer,
+        update_watchrepo: watchRepoReducer
     }),
     applyMiddleware(middleware)
 )

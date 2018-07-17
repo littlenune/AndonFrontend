@@ -1,27 +1,23 @@
 import React, {Component} from 'react';
 import axios from 'axios'
 import {Redirect} from 'react-router-dom'
-import NotificationCard from '../components/NotificationCard';
 import { connect } from 'react-redux'
 import swal from 'sweetalert2';
 import '../stylesheets/search.css';
 import '../stylesheets/sidebar.css';
 import '../stylesheets/dataCard.css';
 import logo from '../res/andon.png';
-import BugspotCard from '../components/BugspotCard'
-import DuplicateCard from '../components/DuplicateCard'
 import addDuplicate from '../actions/addDuplicate'
 import addBugspot from '../actions/addBugspot'
 import addComplexity from '../actions/addComplexity'
-import ComplexityCard from '../components/ComplexityCard';
-import FrequencyCommitCard from '../components/FrequencyCommitCard';
 import addFrequencyCommit from '../actions/addFrequencyCommit';
 import "react-sweet-progress/lib/style.css";
 import addOutdated from '../actions/addOutdated';
-import OutdatedCard from '../components/OutdatedCard';
-import OverallHealthCard from '../components/OverallHealthCard';
 import addStatus from '../actions/addStatus';
 import addScore from '../actions/addScore';
+import WatchCard from '../components/WatchCard';
+import addWatchRepo from '../actions/addWatchrepo';
+import UnwatchCard from '../components/UnwatchCard';
 
 class Monitor extends Component {
     
@@ -225,16 +221,16 @@ class Monitor extends Component {
                     }
                     else { 
                         window.scrollTo(0, 0);
-                        this.setState( {disabled: !this.state.disabled});
-                        const profile = res.data;
-                        this.setState({ profile});
+                        this.props.update_watchrepo(res.data)
                         this.setState({text: 'Unwatch'})
                         this.updateFreqCom();
                         this.setState({
                             watch_status: true,
+                            disabled: !this.state.disabled
                         })
                         this.cloneRepoFunction();
                         this.props.update_status(true);
+
                     }
                 }).catch(err => {
                     console.log(err.data);
@@ -342,61 +338,18 @@ class Monitor extends Component {
                 <a href="#outdated" className="andon-button">Outdated Library</a>
                 <button id="logoutBtn" className="andon-button" onClick= {(e) => this.onSubmit()}>Logout</button>
             </div>
-                <div className="parallax">
-                <div className="container">
-            <div  className="card">
-            <div>
-            <div className="left-container">
-       
-        <div  className="right-container">
-        
-        <h1>Repository Information</h1>
-        </div>
+           
+          
         { !isWatched ? (
-             <div>
-            <img className="userImg" src={this.props.current_profile.image_url} alt="User"/>
-             <p>Username : {this.props.current_profile.username}</p> 
-             <p>Repository name : {this.props.current_profile.reponame}</p>
-             <p>Created at : {this.props.current_profile.created_at}</p>
-             <p>Updated at : {this.props.current_profile.updated_at}</p>
-             <p>Pushed at : {this.props.current_profile.pushed_at}</p>
-             <p>Issue : {this.props.current_profile.num_issue}</p>
-             </div>
+                                //  <WatchCard/>       
+
+                 <UnwatchCard/>
         ) : (
-            <div>
-            <img className="userImg" src={this.state.profile.image_url} alt="User"/>
-            <p>Username : {this.state.profile.username}</p> 
-            <p>Repository name : {this.state.profile.reponame}</p>
-            <p>Created at : {this.state.profile.created_at}</p>
-            <p>Updated at : {this.state.profile.updated_at}</p>
-            <p>Pushed at : {this.state.profile.pushed_at}</p>
-            <p>Issue : {this.state.profile.num_issue}</p>
-            </div>
+                <WatchCard/>       
+                // <UnwatchCard/>
+   
         )}
-        </div>
-        </div>
-            </div>
-            <div className="card">    
-            <NotificationCard/>
-            </div>
-           <OverallHealthCard/>
-          </div>
-                </div>
-                <div id="frequency">
-                <FrequencyCommitCard/>
-                </div>
-                <div id="duplicate">
-                <DuplicateCard/>
-                </div>
-                <div id="complexity">
-                <ComplexityCard/>
-                </div>
-                <div id="bugspot">
-                <BugspotCard/>
-                </div>
-                <div id="outdated">
-                <OutdatedCard/>
-                </div>
+        
             </div>
         );
     }
@@ -405,13 +358,14 @@ class Monitor extends Component {
 
 function mapDispatchToProps(dispatch){
     return {
+        update_watchrepo: (profile) => dispatch(addWatchRepo(profile)),
         update_duplicate: (duplicate_data,status) => dispatch(addDuplicate(duplicate_data,status)),
         update_bugspot: (bugspot_data,status) => dispatch(addBugspot(bugspot_data,status)),
         update_complexity: (complexity_data,status) => dispatch(addComplexity(complexity_data,status)),
         update_frequency: (frequency_data,status) => dispatch(addFrequencyCommit(frequency_data,status)),
         update_outdated: (outdated_data, status) => dispatch(addOutdated(outdated_data,status)),
         update_status: (status) => dispatch(addStatus(status)),
-        update_score: (score) => dispatch(addScore(score))
+        update_score: (score) => dispatch(addScore(score)),
     }
 }
 
@@ -420,8 +374,6 @@ function mapStateToProps(state){
         profileUsername: state.cookie.username,
         gitName: state.cookie.gitName,
         profile_img: state.cookie.imgURL,
-        current_profile: state.current_repo.profile,
-        current_commit: state.current_repo.commit_data
     }
 }
 

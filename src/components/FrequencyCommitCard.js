@@ -4,22 +4,6 @@ import { LineChart, Line, CartesianGrid, XAxis, YAxis,Tooltip} from 'recharts';
 import '../stylesheets/frequency.css'
 class FrequencyCommitCard extends Component {
    
-//     {isWatched ? (
-//         <LineChart width={1500} height={700} data={this.state.commit_data} margin={{ top: 5, right: 20, bottom: 5, left: 0 }}>
-//         <Line type="monotone" dataKey="commit" stroke="#8884d8" />
-//         <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
-//         <XAxis dataKey="name" />
-//         <YAxis />
-//         <Tooltip />
-//     </LineChart> 
-//   ) : (
-//       <LineChart width={1500} height={700} data={this.props.current_commit} margin={{ top: 5, right: 20, bottom: 5, left: 0 }}>
-//       <Line type="monotone" dataKey="commit" stroke="#8884d8" />
-//       <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
-//       <XAxis dataKey="name" />
-//       <YAxis />
-//       <Tooltip />
-//   </LineChart> 
             render(){
             if(this.props.current_commit !== 'Information not found'){
                 if(this.props.commit_data.length === 0   ){ 
@@ -78,7 +62,5 @@ function mapStateToProps(state){
     commit_data: state.update_frequency.frequency_data
     }
 }
-
-// export default connect(mapStateToProps)(FrequencyCommitCard);
 
 export default connect(mapStateToProps)(FrequencyCommitCard);
