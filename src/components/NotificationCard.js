@@ -5,10 +5,6 @@ import swal from 'sweetalert2'
 import {connect} from 'react-redux'
 
 class NotificationCard extends Component {
-    constructor(props){
-        super(props);
-       
-    }
 
     handleSubmit(e){
         console.log(e)
@@ -20,7 +16,6 @@ class NotificationCard extends Component {
           })
     }
     render(){
-        console.log('NOTIFICATION',this.props.status)
     return (
     <div className="notification-container">
     <h1>Notification Trigger</h1>

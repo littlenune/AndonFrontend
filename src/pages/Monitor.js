@@ -16,11 +16,12 @@ import addComplexity from '../actions/addComplexity'
 import ComplexityCard from '../components/ComplexityCard';
 import FrequencyCommitCard from '../components/FrequencyCommitCard';
 import addFrequencyCommit from '../actions/addFrequencyCommit';
-import { Progress } from 'react-sweet-progress';
 import "react-sweet-progress/lib/style.css";
 import addOutdated from '../actions/addOutdated';
 import OutdatedCard from '../components/OutdatedCard';
 import OverallHealthCard from '../components/OverallHealthCard';
+import addStatus from '../actions/addStatus';
+import addScore from '../actions/addScore';
 
 class Monitor extends Component {
     
@@ -37,12 +38,7 @@ class Monitor extends Component {
             commit_data: [],
             current_profile: [],
             watch_status: false,
-            products: [],
-            overall_score: 0,
-            bugspot_score: 0,
-            complexity_score: 0,
-            duplicate_score: 0,
-            outdated_score: 0
+            overall_score: 0
         }
     }
 
@@ -61,14 +57,11 @@ class Monitor extends Component {
             }
         ).then((res) => {
             if(res.data.message !== 'Not found commits matching search criteria'){
-            console.log("**",res.data.overallhealth);
-            console.log("Score",res.data.overallHealth)
-        this.props.update_bugspot(res.data.score,'available')
-        console.log("1",res.data.overallHealth)
-        this.setState({
-            overall_score: this.state.overall_score + res.data.overallHealth,
-            bugspot_score: res.data.overallHealth
-        })
+            this.props.update_bugspot(res.data,'available')
+            this.setState({
+                overall_score: this.state.overall_score + parseFloat(res.data.overallHealth)
+            })
+            this.props.update_score(this.state.overall_score);
         }
         else {
             this.props.update_bugspot('','unavailable');
@@ -87,15 +80,12 @@ class Monitor extends Component {
                 Authorization: localStorage.token
             }
         }).then((res)=>{
-            console.log('overall complex:',res.data.overallHealth)
-            console.log("COMPLEXITY RES : ",res.data.resObj.length)
             if(res.data.resObj.length !== 0){
-            this.props.update_complexity(res.data.resObj,'available')
-            console.log("2",res.data.overallHealth)
-            this.setState({
-                overall_score: this.state.overall_score + res.data.overallHealth,
-                complexity_score: res.data.overallHealth
-            })
+                this.props.update_complexity(res.data,'available');
+                this.setState({
+                    overall_score: this.state.overall_score + parseFloat(res.data.overallHealth)
+                })
+                this.props.update_score(this.state.overall_score);
             }
             else {
                 this.props.update_complexity('','unavailable');
@@ -113,7 +103,6 @@ class Monitor extends Component {
             text: 'Cloning...',
             onOpen: ()=> {
                 swal.showLoading();
-                console.log("HERE");
                 axios({
                     url: '/api/git/clonerepo',
                     method: 'post',
@@ -124,12 +113,11 @@ class Monitor extends Component {
                     headers: {
                       Authorization: localStorage.token
                   }
-                }).then( res => {
-                    console.log("STATUS",res.data);
-                    this.updateBugspotFunction(),
-                    this.updateComplexityFunction(),
-                    this.updateDuplicateFunction()
-                    this.updateOutdatedFunction()
+                }).then((res) => {
+                    this.updateBugspotFunction();
+                    this.updateComplexityFunction();
+                    this.updateDuplicateFunction();
+                    this.updateOutdatedFunction();
                     if(res.data === 'Finish'){
                         swal.close();
                     }
@@ -149,19 +137,18 @@ class Monitor extends Component {
         )
         .then((res) => {
             if(res.data.message !== 'The jscpd found too many duplicates over threshold'){
-            this.props.update_duplicate(res.data,'available')
-            console.log("3",res.data.overallHealth)
-            this.setState({
-                overall_score: this.state.overall_score + res.data.overallHealth,
-                duplicate_score: res.data.overallHealth
-            })
+                this.props.update_duplicate(res.data,'available')
+                this.setState({
+                    overall_score: this.state.overall_score + parseFloat(res.data.overallHealth)
+                })
+                this.props.update_score(this.state.overall_score);
             }
             else{
                 this.props.update_duplicate('','unavailable');
             }
         })
         .catch((res) => {
-            console.log("CATCH",res);
+            console.log("catch duplicate",res)
         })
     }
 
@@ -173,15 +160,18 @@ class Monitor extends Component {
                 Authorization: localStorage.token
             }
         }).then((res)=> {
-            console.log('outdated result',res.data);
             if(res.data.message !== 'A package.json was not found'){
-            this.props.update_outdated(res.data.resultObj,'available')
+            this.props.update_outdated(res.data,'available')
+            this.setState({
+                overall_score: this.state.overall_score + parseFloat(res.data.overallHealth)
+            })
+            this.props.update_score(this.state.overall_score);
             }
             else {
                 this.props.update_outdated('','unavailable')
             }
         }).catch((res) => {
-            console.log("OUTDATE CATCH",res)
+            console.log("catch outdate",res)
         })
     }
 
@@ -198,7 +188,6 @@ class Monitor extends Component {
             }
         })
         .then(res => {
-            console.log("4",res.data)
             this.props.update_frequency(res.data,'available')
         })
     }
@@ -227,15 +216,12 @@ class Monitor extends Component {
                     }
                 })
                 .then(res => {
-                    console.log(res);
-                    console.log(res.data);
                     if (res.data === 'Information not found'){
                         swal({
                             title: "Username or Repository name not found",
                             text: "Please enter valid username or organization name and repository name",
                             type: "error",
                         });
-                        console.log("HERE1");
                     }
                     else { 
                         window.scrollTo(0, 0);
@@ -248,7 +234,7 @@ class Monitor extends Component {
                             watch_status: true,
                         })
                         this.cloneRepoFunction();
-                        console.log("HERE2");
+                        this.props.update_status(true);
                     }
                 }).catch(err => {
                     console.log(err.data);
@@ -273,12 +259,12 @@ class Monitor extends Component {
                 this.setState({
                     watch_status: false,
                 })
-                console.log("HERE");
                 this.props.update_bugspot('','no data');
                 this.props.update_complexity('','no data');
                 this.props.update_duplicate('','no data');
                 this.props.update_frequency('','no data');
                 this.props.update_outdated('','no data');
+                this.props.update_status(false);
                 this.setState({
                     overall_score: 0,
                     bugspot_score: 0,
@@ -286,6 +272,7 @@ class Monitor extends Component {
                     complexity_score: 0,
                     outdated_score: 0
                 })
+
             }
         }
     }
@@ -389,8 +376,7 @@ class Monitor extends Component {
         </div>
         </div>
             </div>
-            <div className="card">
-           
+            <div className="card">    
             <NotificationCard/>
             </div>
            <OverallHealthCard/>
@@ -423,7 +409,9 @@ function mapDispatchToProps(dispatch){
         update_bugspot: (bugspot_data,status) => dispatch(addBugspot(bugspot_data,status)),
         update_complexity: (complexity_data,status) => dispatch(addComplexity(complexity_data,status)),
         update_frequency: (frequency_data,status) => dispatch(addFrequencyCommit(frequency_data,status)),
-        update_outdated: (outdated_data, status) => dispatch(addOutdated(outdated_data,status))
+        update_outdated: (outdated_data, status) => dispatch(addOutdated(outdated_data,status)),
+        update_status: (status) => dispatch(addStatus(status)),
+        update_score: (score) => dispatch(addScore(score))
     }
 }
 

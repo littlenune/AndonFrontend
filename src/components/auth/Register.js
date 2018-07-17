@@ -35,9 +35,7 @@ class Register extends Component {
     axios.post('/api/user/register', newUser)
         .then(
             (res) => {
-                
-                console.log('data: ',res.data)
-                
+                                
                 if( res.data.username === 'This username already exists'){
                     swal({
                         title: "Username already exists",

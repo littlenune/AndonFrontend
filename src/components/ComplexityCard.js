@@ -8,9 +8,7 @@ import '../stylesheets/complex.css';
 class ComplexityCard extends Component {
     
     render() {
-        console.log('Complexity Card',this.props.complexity_data);
-        console.log('COMPLEXITY STATUS',this.props.status);
-        if( this.props.complexity_data.length !== 0){
+        if( this.props.status === 'available'){
           return (
             <div className="parallax-2">
             <div className="card-complex">
@@ -33,14 +31,11 @@ class ComplexityCard extends Component {
                       {
                           Header:"Source Line of Code",
                           accessor: "sloc"
-                      }
-                      
-                   
-                 
+                      } 
                 ]}
                 defaultPageSize={10}
                 style={{
-                  height: "600px" // This will force the table body to overflow and scroll, since there is not enough room
+                  height: "600px"
                 }}
                 className="-striped -highlight"
               />
@@ -48,7 +43,8 @@ class ComplexityCard extends Component {
               </div>
             </div>
           );
-        }else {
+        }
+        else {
           return(
             <div className="parallax-2">
               <h2 id="header">Complexity of Code</h2>
@@ -56,12 +52,12 @@ class ComplexityCard extends Component {
             </div>
           );
         }
-        }
+    }
 }
 
 function mapStateToProps(state){
     return {
-        complexity_data: state.update_complexity.complexity_data,
+        complexity_data: state.update_complexity.complexity_data.resObj,
         status : state.update_complexity.status
     }
 }

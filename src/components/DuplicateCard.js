@@ -8,7 +8,6 @@ class DuplicateCard extends Component {
     
 
     render(){
-        console.log('Duplicate Card',this.props.duplicate_data)
         if ( this.props.duplicate_data.length !== 0){
         const data = [ 
             {name: 'Duplicate', value: this.props.duplicate_data.percentage}, 
@@ -24,7 +23,7 @@ class DuplicateCard extends Component {
                 </div>
 
                 <div className="c"> <PieChart width={1000} height={1000}>
-                    <Pie data={data} cx={500} cy={500} innerRadius={175} outerRadius={350} fill="#82ca9d"/>
+                    <Pie data={data} cx={500} cy={500} innerRadius={175} outerRadius={350} fill="#82ca9d" dataKey="data"/>
                     <Tooltip/>
                 </PieChart>
                 </div>      

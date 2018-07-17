@@ -6,6 +6,7 @@ import {Redirect} from 'react-router-dom'
 import addCookie from '../../actions/addCookie';
 import { connect } from 'react-redux'; 
 import addCurrentRepo from '../../actions/addCurrentRepo';
+import addStatus from '../../actions/addStatus';
 class Login extends Component {
     constructor() {
         super()
@@ -32,12 +33,6 @@ class Login extends Component {
     onSubmit(e) {
         e.preventDefault();
 
-        const user = {
-            username: this.state.username,
-            password: this.state.password,
-        }
-        console.log(user);
-
         axios.post('/api/user/login',{
             username: this.state.username,
             password: this.state.password,
@@ -45,6 +40,7 @@ class Login extends Component {
         .then(
             (res) => {
                 this.props.cookie(res.data.payload.username,res.data.payload.gitName,res.data.payload.imgURL);
+                this.props.update_status(false);
                     localStorage.setItem('token', res.data.token);
                     this.getCurrentRepo(res.data.payload.gitName);
             })
@@ -57,7 +53,6 @@ class Login extends Component {
                     timer: 2500
                 })
             }).catch((res) => {
-                console.log(res.data)
                 swal({
                     title: "Error",
                     text: "Wrong username or password",
@@ -91,7 +86,6 @@ class Login extends Component {
                     Authorization: localStorage.token
                 }
             }).then(res => {
-                console.log('current profile : ',res.data.reponame);
                 this.getCurrentCommit(gitName,res.data.reponame,res.data);
             }
             ).then(()=>{
@@ -114,7 +108,6 @@ class Login extends Component {
                     }
                 })
                 .then(res => {
-                    console.log('commit',res.data);
                     if(res.data === 'Information Not found'){
                         this.setState({ redirect_status: false})
                     }
@@ -134,32 +127,33 @@ class Login extends Component {
         if( isAlreadyAuthenticated && this.state.redirect_status ){
         return (
             <Redirect to={{ pathname: '/monitor'}}  /> 
-        )
+            )
         }
         else {
-        return (
-            <div className="parallax">
-            <div className="typewriter">
-                <h1 id="header-text">ANDON MONITOR</h1>
-            </div>
-            <div id="login-div">            
-                <form onSubmit={this.onSubmit}>
-                    <input  type="text" name="username" required   autoComplete="off" placeholder="Username" onChange={this.onChange}/>
-                    <input  type="password" placeholder="Password" required autoComplete="off"  name="password" value={this.state.password} onChange={this.onChange}></input>
-                    <input id="submitBtn" type="submit" value="Login"/>
-                </form>
-                <a href="/register">Not a member? </a>
+            return (
+                <div className="parallax">
+                <div className="typewriter">
+                    <h1 id="header-text">ANDON MONITOR</h1>
                 </div>
-            </div>
-        )
-    }
+                <div id="login-div">            
+                    <form onSubmit={this.onSubmit}>
+                        <input  type="text" name="username" required   autoComplete="off" placeholder="Username" onChange={this.onChange}/>
+                        <input  type="password" placeholder="Password" required autoComplete="off"  name="password" value={this.state.password} onChange={this.onChange}></input>
+                        <input id="submitBtn" type="submit" value="Login"/>
+                    </form>
+                    <a href="/register">Not a member? </a>
+                    </div>
+                </div>
+            )
+        }
     }
 }
 
 function mapDispatchToProps(dispatch){
     return {
        cookie: (username,gitName, imgURL) => dispatch(addCookie(username,gitName,imgURL)),
-       current_repo: (profile,commit_data) => dispatch(addCurrentRepo(profile,commit_data))
+       current_repo: (profile,commit_data) => dispatch(addCurrentRepo(profile,commit_data)),
+       update_status: (status) => dispatch(addStatus(status))
     }
 }
 

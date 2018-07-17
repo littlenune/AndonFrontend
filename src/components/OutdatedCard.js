@@ -5,6 +5,7 @@ import 'react-table/react-table.css';
 
 class OutdatedCard extends Component {
     render(){
+        if(this.props.status === 'available'){
         return(
             <div className="parallax-2">
             <h1>Library Outdated</h1>
@@ -42,11 +43,21 @@ class OutdatedCard extends Component {
             
         );
     }
+    else {
+        return (
+            <div className="parallax-2">
+             <h2 id="header">Outdated Library</h2>
+             <h2>No data shown. You must select data first</h2>
+            </div>
+        )
+    }
+    }
 }
 
 function mapStateToProps(state){
     return {
-        outdated_data: state.update_outdated.outdated_data
+        outdated_data: state.update_outdated.outdated_data.resultObj,
+        status: state.update_outdated.status
     }
 }
 

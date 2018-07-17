@@ -14,6 +14,8 @@ import { duplicateReducer } from './reducers/duplicateReducer';
 import { complexityReducer } from './reducers/complexityReducer';
 import { frequencyReducer } from './reducers/frequencyReducer';
 import { outdatedReducer } from './reducers/outdatedReducer';
+import { statusReducer } from './reducers/statusReducer';
+import { scoreReducer } from './reducers/scoreReducer';
 
 const history = createHistory();
 
@@ -27,7 +29,9 @@ const store = createStore(
         update_duplicate: duplicateReducer,
         update_complexity: complexityReducer,
         update_frequency: frequencyReducer,
-        update_outdated: outdatedReducer
+        update_outdated: outdatedReducer,
+        update_status: statusReducer,
+        update_score: scoreReducer
     }),
     applyMiddleware(middleware)
 )

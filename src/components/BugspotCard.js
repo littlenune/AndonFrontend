@@ -8,7 +8,7 @@ import { connect } from 'react-redux';
 class BugspotCard extends Component {
 
     render() {
-        if( this.props.bugspot_data.length !== 0){
+      if(this.props.status === 'available'){
           return (
             <div className="parallax-2">
               <h2 id="header">Bugspot Score Analyze</h2>
@@ -73,7 +73,8 @@ class BugspotCard extends Component {
 
     function mapStateToProps(state){
         return {
-            bugspot_data: state.update_bugspot.bugspot_data,
+            bugspot_data: state.update_bugspot.bugspot_data.score,
+            status: state.update_bugspot.status
         }
     }
     
