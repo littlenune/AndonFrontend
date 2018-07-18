@@ -9,7 +9,7 @@ class FrequencyCommitCard extends Component {
                 if(this.props.commit_data.length === 0   ){ 
                     const data = this.props.current_commit;
                 return (
-                    <div className="parallax-2"> 
+                    <div className="parallax-2" id='frequency'> 
                     <h2 id="header">Frequency of Commit</h2>
                     <LineChart width={1500} height={700} data={data} margin={{ top: 5, right: 20, bottom: 5, left: 0 }}>
                     <Line type="monotone" dataKey="commit" stroke="#8884d8" />
@@ -28,7 +28,7 @@ class FrequencyCommitCard extends Component {
                         }
                         else {
                     return (
-                        <div className="parallax-2"> 
+                        <div className="parallax-2" id='frequency'> 
                         <h2 id="header">Frequency of commit</h2>
                         <LineChart width={1500} height={700} data={data} margin={{ top: 5, right: 20, bottom: 5, left: 0 }}>
                         <Line type="monotone" dataKey="commit" stroke="#8884d8" />

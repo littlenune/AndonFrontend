@@ -50,7 +50,7 @@ class Login extends Component {
                     text: "Login successful",
                     type: "success",
                     showConfirmButton: false,
-                    timer: 2500
+                    timer: 3000
                 })
             }).catch((res) => {
                 swal({

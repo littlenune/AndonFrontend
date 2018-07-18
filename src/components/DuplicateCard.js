@@ -14,14 +14,11 @@ class DuplicateCard extends Component {
             { name: 'Non duplicate', value: 100-this.props.duplicate_data.percentage}];
         return(
             <div className="parallax-2">
-                <div className="b">
                 <h2 id="header">Code Duplication</h2>
                 <h2>Clone: {this.props.duplicate_data.clones}</h2>
                 <h2>Duplicate: {this.props.duplicate_data.duplications}</h2>
                 <h2>Files: {this.props.duplicate_data.files}</h2>
                 <h2>Lines: {this.props.duplicate_data.lines}</h2>
-                </div>
-
                 <div className="c"> <PieChart width={1000} height={1000}>
                     <Pie data={data} cx={500} cy={500} innerRadius={175} outerRadius={350} fill="#82ca9d" dataKey="data"/>
                     <Tooltip/>

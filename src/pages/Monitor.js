@@ -92,8 +92,7 @@ class Monitor extends Component {
         })
         .catch(res=>{
             console.log("catch complexity : ",res)
-        })
-        
+        })        
     }
 
     cloneRepoFunction(){
@@ -135,7 +134,6 @@ class Monitor extends Component {
         }
         )
         .then((res) => {
-            console.log('dup',res.data);
             if(res.data.message !== 'The jscpd found too many duplicates over threshold'){
                 this.props.update_duplicate(res.data,'available')
             }
@@ -234,7 +232,6 @@ class Monitor extends Component {
                     console.log(err.data);
                 })
             }
-           
             if(this.state.text === 'Unwatch'){
                 this.setState( {disabled: !this.state.disabled});
                 document.getElementById("search-bar1").value = "";
@@ -261,16 +258,10 @@ class Monitor extends Component {
                 this.props.update_status(false);
                 this.setState({
                     overall_score: 0,
-                    bugspot_score: 0,
-                    duplicate_score: 0,
-                    complexity_score: 0,
-                    outdated_score: 0
                 })
-
             }
         }
     }
-
 
     onSubmit(e) {
         swal({
@@ -300,57 +291,46 @@ class Monitor extends Component {
      }
     
     render(){
-        // window.onbeforeunload = function() {
-        //     localStorage.removeItem('token')
-        //     return '';
-        //   };
+        window.onbeforeunload = function() {
+            localStorage.removeItem('token')
+            return '';
+          };
         const isWatched = this.state.watch_status;
-        
         const isAlreadyAuthenticated = this.isAuthenticated();
         if( !isAlreadyAuthenticated){
-        return (
-            <Redirect to={{ pathname: '/'}}  /> 
-        )
+            return (
+                <Redirect to={{ pathname: '/'}}  /> 
+            )
         }
         else {
-            // const image_path = '../../image-url/' + this.props.imgURL
-            // console.log('IMAGE NAME',imageName);
         return (
-        <div>
-           
-             <div className="landing">
-                <img src={logo} className="App-logo" alt="logo" />
-                <input id="search-bar1" className="search-input" type="text" name="search"  autoComplete="off" placeholder="Input username or organization name ..." required disabled={this.state.disabled} onChange={(e) => this.setState({username: e.target.value})}/>
-                <input id="search-bar2" className="search-input" type="text" name="search"   autoComplete="off" placeholder="Input repository name ..." required disabled={this.state.disabled} onChange={(e) => this.setState({repo_url: e.target.value})}/>
-                    <button className="button" onClick= {(e) => this.watchRepo(e)} >{this.state.text}</button>  
+            <div>
+                <div className="landing">
+                    <img src={logo} className="App-logo" alt="logo" />
+                    <input id="search-bar1" className="search-input" type="text" name="search"  autoComplete="off" placeholder="Input username or organization name ..." required disabled={this.state.disabled} onChange={(e) => this.setState({username: e.target.value})}/>
+                    <input id="search-bar2" className="search-input" type="text" name="search"   autoComplete="off" placeholder="Input repository name ..." required disabled={this.state.disabled} onChange={(e) => this.setState({repo_url: e.target.value})}/>
+                        <button className="button" onClick= {(e) => this.watchRepo(e)} >{this.state.text}</button>  
                 </div>
-             <div className="sidenav">
-                <h2>Welcome</h2>
-                {/* <img id="userImg" src={require('${image_path}')}></img> */}
-                <h2 className="register-text">{this.props.profileUsername}</h2>
-                <a href="#main" className="andon-button">Notification Trigger</a>
-                <a href="#frequency" className="andon-button">Frequency of commit</a>
-                <a href="#duplicate" className="andon-button">Code Duplication</a>
-                <a href="#complexity" className="andon-button">Code Complexity</a>
-                <a href="#bugspot" className="andon-button">Bugspot Analyze</a>
-                <a href="#outdated" className="andon-button">Outdated Library</a>
-                <button id="logoutBtn" className="andon-button" onClick= {(e) => this.onSubmit()}>Logout</button>
+                <div className="sidenav">
+                    <h2>Welcome</h2>
+                    {/* <img id="userImg" src={require('${image_path}')}></img> */}
+                    <h2 className="register-text">{this.props.profileUsername}</h2>
+                    <a href="#main" className="andon-button">Notification Trigger</a>
+                    <a href="#frequency" className="andon-button">Frequency of commit</a>
+                    <a href="#duplicate" className="andon-button">Code Duplication</a>
+                    <a href="#complexity" className="andon-button">Code Complexity</a>
+                    <a href="#bugspot" className="andon-button">Bugspot Analyze</a>
+                    <a href="#outdated" className="andon-button">Outdated Library</a>
+                    <button id="logoutBtn" className="andon-button" onClick= {(e) => this.onSubmit()}>Logout</button>
+                </div>
+                { !isWatched ? (
+                    <UnwatchCard/>
+                ) : (
+                    <WatchCard/>          
+                )}
             </div>
-           
-          
-        { !isWatched ? (
-                                //  <WatchCard/>       
-
-                 <UnwatchCard/>
-        ) : (
-                <WatchCard/>       
-                // <UnwatchCard/>
-   
-        )}
-        
-            </div>
-        );
-    }
+            );
+        }
     }
 }
 

@@ -10,7 +10,7 @@ class BugspotCard extends Component {
     render() {
       if(this.props.status === 'available'){
           return (
-            <div className="parallax-2">
+            <div className="parallax-2" >
               <h2 id="header">Bugspot Score Analyze</h2>
               <ReactTable
                 data={this.props.bugspot_data}
@@ -27,7 +27,7 @@ class BugspotCard extends Component {
                         Header: 'Percentage',
                         accessor: 'percentage',
                         Cell: row => (
-                          <div
+                          <div className="rt-td"
                             style={{
                               width: '100%',
                               height: '100%',
