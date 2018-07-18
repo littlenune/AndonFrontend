@@ -43,6 +43,13 @@ class Monitor extends Component {
         return token && token.length > 10;
     }
 
+    updateOverallScore(res){
+        this.setState({
+            overall_score: this.state.overall_score + parseInt(res.data.overallHealth, 10)
+        })
+        this.props.update_score(this.state.overall_score);
+    }
+
     updateBugspotFunction(){
         axios({
             url: 'api/analyze/bugspot',
@@ -54,14 +61,12 @@ class Monitor extends Component {
         ).then((res) => {
             if(res.data.message !== 'Not found commits matching search criteria'){
             this.props.update_bugspot(res.data,'available')
-            this.setState({
-                overall_score: this.state.overall_score + parseFloat(res.data.overallHealth)
-            })
-            this.props.update_score(this.state.overall_score);
         }
         else {
-            this.props.update_bugspot('','unavailable');
+            this.props.update_bugspot(res.data,'unavailable');
         }
+        this.updateOverallScore(res);
+       
     })
     .catch((res) => {
         console.log("catch",res);
@@ -76,19 +81,17 @@ class Monitor extends Component {
                 Authorization: localStorage.token
             }
         }).then((res)=>{
+            console.log("complex",res.data);
             if(res.data.resObj.length !== 0){
                 this.props.update_complexity(res.data,'available');
-                this.setState({
-                    overall_score: this.state.overall_score + parseFloat(res.data.overallHealth)
-                })
-                this.props.update_score(this.state.overall_score);
             }
             else {
-                this.props.update_complexity('','unavailable');
+                this.props.update_complexity(res.data,'unavailable');
             }
+            this.updateOverallScore(res);
         })
         .catch(res=>{
-            console.log("CATCH",res)
+            console.log("catch complexity : ",res)
         })
         
     }
@@ -132,16 +135,14 @@ class Monitor extends Component {
         }
         )
         .then((res) => {
+            console.log('dup',res.data);
             if(res.data.message !== 'The jscpd found too many duplicates over threshold'){
                 this.props.update_duplicate(res.data,'available')
-                this.setState({
-                    overall_score: this.state.overall_score + parseFloat(res.data.overallHealth)
-                })
-                this.props.update_score(this.state.overall_score);
             }
             else{
-                this.props.update_duplicate('','unavailable');
+                this.props.update_duplicate(res.data,'Too many duplication');
             }
+            this.updateOverallScore(res);
         })
         .catch((res) => {
             console.log("catch duplicate",res)
@@ -158,14 +159,11 @@ class Monitor extends Component {
         }).then((res)=> {
             if(res.data.message !== 'A package.json was not found'){
             this.props.update_outdated(res.data,'available')
-            this.setState({
-                overall_score: this.state.overall_score + parseFloat(res.data.overallHealth)
-            })
-            this.props.update_score(this.state.overall_score);
             }
             else {
-                this.props.update_outdated('','unavailable')
+                this.props.update_outdated(res.data,'unavailable')
             }
+            this.updateOverallScore(res);
         }).catch((res) => {
             console.log("catch outdate",res)
         })

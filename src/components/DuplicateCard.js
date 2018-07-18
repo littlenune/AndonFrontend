@@ -8,7 +8,7 @@ class DuplicateCard extends Component {
     
 
     render(){
-        if ( this.props.duplicate_data.length !== 0){
+        if ( this.props.duplicate_data.status === 'available'){
         const data = [ 
             {name: 'Duplicate', value: this.props.duplicate_data.percentage}, 
             { name: 'Non duplicate', value: 100-this.props.duplicate_data.percentage}];
@@ -46,7 +46,8 @@ class DuplicateCard extends Component {
 
 function mapStateToProps(state){
     return {
-        duplicate_data: state.update_duplicate.duplicate_data
+        duplicate_data: state.update_duplicate.duplicate_data,
+        status: state.update_duplicate.status
     }
 }
 

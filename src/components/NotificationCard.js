@@ -6,7 +6,14 @@ import {connect} from 'react-redux'
 
 class NotificationCard extends Component {
 
+    constructor(props){
+        super(props);
+        this.state = {
+            select_trigger: ''
+        };
+    }
     handleSubmit(e){
+        
         console.log(e)
         swal({
             type: 'success',
@@ -20,19 +27,19 @@ class NotificationCard extends Component {
     <div className="notification-con">
     <h1>Notification Trigger</h1>
         <label className="container">Frequency of Commits : {this.props.freqCommit_status}
-        <input type="radio" name="radio"/>
+        <input type="radio" name="radio" id="frequency" checked={(e) => this.setState({select_trigger: e.target.value})}/>
         <span className="checkmark"></span>
         </label>
         <label className="container">Code Duplication : {this.props.duplicate_status}
-        <input type="radio" name="radio"/>
+        <input type="radio" name="radio" id="duplicate" checked={(e) => this.setState({select_trigger: e.target.value})}/>
         <span className="checkmark"></span>
         </label>
         <label className="container">Complexity of Code : {this.props.complex_status}
-        <input type="radio" name="radio"/>
+        <input type="radio" name="radio" id="complex" checked={(e) => this.setState({select_trigger: e.target.value})}/>
         <span className="checkmark"></span>
         </label>
         <label className="container">Bugspot Score : {this.props.bugspot_status}
-        <input type="radio" name="radio"/>
+        <input type="radio" name="radio" id="bugspot" checked={(e) => this.setState({select_trigger: e.target.value})}/>
         <span className="checkmark"></span>
         </label>
         <label className="container">Outdated Library : {this.props.outdated_status}
