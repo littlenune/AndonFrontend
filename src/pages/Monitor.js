@@ -36,6 +36,11 @@ class Monitor extends Component {
             watch_status: false,
             overall_score: 0
         }
+        this.props.update_bugspot('','Loading...');
+        this.props.update_complexity('','Loading...');
+        this.props.update_duplicate('','Loading...');
+        this.props.update_frequency('','Loading...');
+        this.props.update_outdated('','Loading...');
     }
 
     isAuthenticated(){
@@ -81,7 +86,6 @@ class Monitor extends Component {
                 Authorization: localStorage.token
             }
         }).then((res)=>{
-            console.log("complex",res.data);
             if(res.data.resObj.length !== 0){
                 this.props.update_complexity(res.data,'available');
             }
@@ -134,11 +138,11 @@ class Monitor extends Component {
         }
         )
         .then((res) => {
-            if(res.data.message !== 'The jscpd found too many duplicates over threshold'){
-                this.props.update_duplicate(res.data,'available')
+            if(res.data.message === 'The jscpd found too many duplicates over threshold'){
+                this.props.update_duplicate(res.data,'Too many duplication');
             }
             else{
-                this.props.update_duplicate(res.data,'Too many duplication');
+                this.props.update_duplicate(res.data,'available')
             }
             this.updateOverallScore(res);
         })
@@ -250,11 +254,11 @@ class Monitor extends Component {
                 this.setState({
                     watch_status: false,
                 })
-                this.props.update_bugspot('','no data');
-                this.props.update_complexity('','no data');
-                this.props.update_duplicate('','no data');
-                this.props.update_frequency('','no data');
-                this.props.update_outdated('','no data');
+                this.props.update_bugspot('','Loading...');
+                this.props.update_complexity('','Loading...');
+                this.props.update_duplicate('','Loading...');
+                this.props.update_frequency('','Loading...');
+                this.props.update_outdated('','Loading...');
                 this.props.update_status(false);
                 this.setState({
                     overall_score: 0,
@@ -311,7 +315,19 @@ class Monitor extends Component {
                     <input id="search-bar2" className="search-input" type="text" name="search"   autoComplete="off" placeholder="Input repository name ..." required disabled={this.state.disabled} onChange={(e) => this.setState({repo_url: e.target.value})}/>
                         <button className="button" onClick= {(e) => this.watchRepo(e)} >{this.state.text}</button>  
                 </div>
-                <div className="sidenav">
+    
+                { !isWatched ? (
+                      <div>
+                      <div className="sidenav">
+                      <h2>Welcome</h2>
+                      <h2 className="register-text">{this.props.profileUsername}</h2>
+                      <button id="logoutBtn" className="andon-button" onClick= {(e) => this.onSubmit()}>Logout</button>
+                        </div>
+                    <UnwatchCard/>
+                    </div>
+                ) : (
+                    <div>
+                    <div className="sidenav">
                     <h2>Welcome</h2>
                     {/* <img id="userImg" src={require('${image_path}')}></img> */}
                     <h2 className="register-text">{this.props.profileUsername}</h2>
@@ -323,10 +339,8 @@ class Monitor extends Component {
                     <a href="#outdated" className="andon-button">Outdated Library</a>
                     <button id="logoutBtn" className="andon-button" onClick= {(e) => this.onSubmit()}>Logout</button>
                 </div>
-                { !isWatched ? (
-                    <UnwatchCard/>
-                ) : (
-                    <WatchCard/>          
+                    <WatchCard/>    
+                    </div>      
                 )}
             </div>
             );

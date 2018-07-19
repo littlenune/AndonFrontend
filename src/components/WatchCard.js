@@ -13,8 +13,8 @@ class WatchCard extends Component {
     render(){
         return(
             <div >
-            <div className="parallax">
-            <div className="row" id="main">
+            <div className="parallax" id="main">
+            <div className="row" >
                 <div className="column">
              <div className="profile-con">
              <img className="img-profile" src={this.props.profile.image_url} alt="User"/>

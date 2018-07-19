@@ -4,7 +4,7 @@
 }
 
 .profile-con-normal {
-  width: 30%;
+  /* width: 30%; */
   padding-left: 2%;
   padding-top: 2%;
   padding-bottom: 2%;
@@ -70,8 +70,29 @@ box-shadow: 0 8px 16px 0 grey;
   padding-bottom: 1%;
 }
 
+.column-unwatch {
+  float: left;
+  padding-right: 1%;
+  padding-bottom: 1%;
+}
+
+.frequency-con {
+  width: 600px;
+  padding-left: 10%;
+  padding-top: 2%;
+  padding-bottom: 2%;
+  padding-right: 10%;
+  background-color: white;
+  transition: 0.3s;
+  border-radius: 5px;
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+
+}
+.frequency-con:hover {
+box-shadow: 0 8px 16px 0 grey;
+}
 .row{
-  /* width: 100%; */
+  /* width: auto; */
   padding-top: 3%;
   padding-left: 5%;
   display: table;
