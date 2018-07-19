@@ -62,7 +62,7 @@ class Monitor extends Component {
             headers: {
                 Authorization: localStorage.token
                 }
-            }
+        })
         .then((res) => {
             if(res.data.message !== 'Not found commits matching search criteria'){
             this.props.update_bugspot(res.data,'available')
@@ -76,7 +76,7 @@ class Monitor extends Component {
     .catch((res) => {
         console.log("catch",res);
     })
-    )
+    
     }
 
     updateComplexityFunction(){
@@ -86,7 +86,7 @@ class Monitor extends Component {
             headers: {
                 Authorization: localStorage.token
             }
-        }.then((res)=>{
+        }).then((res)=>{
             if(res.data.resObj.length !== 0){
                 this.props.update_complexity(res.data,'available');
             }
@@ -98,7 +98,7 @@ class Monitor extends Component {
         .catch(res=>{
             console.log("catch complexity : ",res)
         })  
-        )      
+              
     }
 
     cloneRepoFunction(){
@@ -137,9 +137,7 @@ class Monitor extends Component {
             headers: {
                 Authorization: localStorage.token
             }
-        }
-        
-        .then((res) => {
+        }).then((res) => {
             if(res.data.message === 'The jscpd found too many duplicates over threshold'){
                 this.props.update_duplicate(res.data,'Too many duplication');
             }
@@ -151,7 +149,7 @@ class Monitor extends Component {
         .catch((res) => {
             console.log("catch duplicate",res)
         })
-        )
+        
     }
 
     updateOutdatedFunction(){
@@ -161,7 +159,7 @@ class Monitor extends Component {
             headers: {
                 Authorization: localStorage.token
             }
-        }.then((res)=> {
+        }).then((res)=> {
             if(res.data.message !== 'A package.json was not found'){
             this.props.update_outdated(res.data,'available')
             }
@@ -172,7 +170,7 @@ class Monitor extends Component {
         }).catch((res) => {
             console.log("catch outdate",res)
         })
-    )
+    
     }
 
     updateFreqCom(){
@@ -186,11 +184,11 @@ class Monitor extends Component {
             headers: {
                 Authorization: localStorage.token
             }
-        }
+        })
         .then(res => {
             this.props.update_frequency(res.data,'available')
         })
-        )
+        
     }
 
     watchRepo(e){
