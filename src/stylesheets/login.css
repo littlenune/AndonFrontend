@@ -42,6 +42,22 @@ input{
     margin-left: -15em; 
 }
 
+.camBtn{
+   left: 0px;
+   bottom: 0px;
+}
+
+.img-btn{
+    width: 5%;
+    height: 6%;
+    transition: transform .2s;
+}
+
+.img-btn:hover{
+    transform: scale(1.5);
+}
+
+
 @media (max-width: 575px) { 
     #login-div {
         top: 50%;
@@ -51,10 +67,10 @@ input{
     }
 }
 
-/* label{
-    color: white;
-
-} */
+.login-con{
+    position: static;
+    /* left: 30px; */
+}
 
 a:hover{
     color:#F9DA4A;
