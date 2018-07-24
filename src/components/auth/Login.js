@@ -38,7 +38,6 @@ class Login extends Component {
 
     onSubmit(e) {
         e.preventDefault();
-
         axios.post('/api/user/login',{
             username: this.state.username,
             password: this.state.password,
@@ -108,7 +107,6 @@ class Login extends Component {
                 this.props.cookie(username,gitName,res.data.image_url);
             }
             )
-           
         });  
     }
 
@@ -168,24 +166,42 @@ class Login extends Component {
         swal.mixin({
             input: 'password',
             confirmButtonText: 'Submit',
+            inputPlaceholder: 'Enter your password',
           }).queue([
             {
               title: 'Clear Previous login!',
               text: 'Please fill in password to clear previous logged in status '
             },
           ]).then((result) => {
-              console.log(result);
-              axios.post('/api/user/clearDB',result.value[0]).then( res => {
-                  console.log('clearDB',res);
-                swal({
-                    title: 'All done!',
-                    text: 'Previous logged in status is cleared',
-                    confirmButtonText: 'Lovely!'
-                  })
+              if( result.value !== "" && result.dismiss !== 'overlay'){
+              axios.post('/api/user/clearDB',{ password: result.value[0]}).then( res => {
+                  if(res.data !== 'Password incorrect'){
+                    swal({
+                        title: 'All done!',
+                        text: 'Previous logged in status is cleared',
+                        type: 'success',
+                        confirmButtonText: 'Lovely!'
+                    })
+                  }
+                else {
+                    swal({
+                        title: 'Password Incorect!',
+                        text: 'Only admin password is allowed',
+                        type: 'error',
+                        confirmButtonText: 'Try Again'
+                    })
+                }
               })
-
+            }
+            else {
+                swal({
+                    title: 'Password Required',
+                    type: 'error',
+                    confirmButtonText: 'Try Again'
+                  })
+            }
+            
           })
-          
     }
 
     render() {
@@ -204,9 +220,9 @@ class Login extends Component {
                     </div>
                     <div id="login-div">            
                         <form onSubmit={this.onSubmit}>
-                            <input  type="text" name="username" required   autoComplete="off" placeholder="Username" onChange={this.onChange}/>
-                            <input  type="password" placeholder="Password" required autoComplete="off"  name="password" value={this.state.password} onChange={this.onChange}></input>
-                            <input id="submitBtn" type="submit" value="Login"/>
+                            <input className="input-login" type="text" name="username" required   autoComplete="off" placeholder="Username" onChange={this.onChange}/>
+                            <input className="input-login" type="password" placeholder="Password" required autoComplete="off"  name="password" value={this.state.password} onChange={this.onChange}></input>
+                            <input className="input-login" id="submitBtn" type="submit" value="Login"/>
                         </form>
                         <a href="/register">Not a member? </a>
                         <a onClick={this.openCamera} className="camBtn"><img className="img-btn" src={camBtn} alt="btn"/></a>
