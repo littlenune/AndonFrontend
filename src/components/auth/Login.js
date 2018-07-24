@@ -44,6 +44,7 @@ class Login extends Component {
         })
         .then(
             (res) => {
+                console.log('Success',res.data.success)
                 if(res.data.username !== 'The service is unavailable'){
                     this.setState({ isLoggedIn: true})
                     this.props.update_status(false);
@@ -61,7 +62,7 @@ class Login extends Component {
                     timer: 3000
                 })
             }
-                else {
+                else if(!this.state.isLoggedIn) {
                     swal({
                         title: "Cannot log in",
                         text: "Please logout on previous tab",
@@ -175,6 +176,7 @@ class Login extends Component {
           ]).then((result) => {
               if( result.value !== "" && result.dismiss !== 'overlay'){
               axios.post('/api/user/clearDB',{ password: result.value[0]}).then( res => {
+                  console.log('database')
                   if(res.data !== 'Password incorrect'){
                     swal({
                         title: 'All done!',
