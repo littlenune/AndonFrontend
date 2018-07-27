@@ -12,12 +12,10 @@ class NotificationCard extends Component {
             select_trigger: '',
             bugspot_score: 0,
             command : ['overall','frequency','duplicate','complex','bugspot','outdated']
-
         };
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
     }
-
   
     handleChange(e) {
         this.setState({
@@ -64,40 +62,39 @@ class NotificationCard extends Component {
         })
     }
 
-    
     render(){
-    return (
-    <div className="notification-con">
-        <form onSubmit={this.handleSubmit}>
-        <h1>Notification Trigger</h1>
-           <label className="container">Overall Health
-            <input type="radio" value="overall" checked={this.state.select_trigger==="overall"} onChange={this.handleChange}/>
-            <span className="checkmark"></span>
-            </label>
-            <label className="container">Frequency of Commits : {this.props.data[1].status}
-            <input type="radio" value="frequency" checked={this.state.select_trigger==="frequency"} onChange={this.handleChange}/>
-            <span className="checkmark"></span>
-            </label>
-            <label className="container">Code Duplication : {this.props.data[2].status}
-            <input type="radio" value="duplicate" checked={this.state.select_trigger==="duplicate"} onChange={this.handleChange}/>
-            <span className="checkmark"></span>
-            </label>
-            <label className="container">Code Complexity : {this.props.data[3].status}
-            <input type="radio" value="complex" checked={this.state.select_trigger==="complex"} onChange={this.handleChange}/>
-            <span className="checkmark"></span>
-            </label>
-            <label className="container">Bugspot Analyze : {this.props.data[4].status}
-            <input type="radio" value="bugspot" checked={this.state.select_trigger==="bugspot"} onChange={this.handleChange}/>
-            <span className="checkmark"></span>
-            </label>
-            <label className="container">Outdated Library : {this.props.data[5].status}
-            <input type="radio" value="outdated" checked={this.state.select_trigger==="outdated"} onChange={this.handleChange}/>
-            <span className="checkmark"></span>
-            </label>
-            <button type="submit" className="andon-button">Notify to Andon Model</button>
-        </form>
-    </div>
-    );
+        return (
+        <div className="notification-con">
+            <form onSubmit={this.handleSubmit}>
+            <h1>Notification Trigger</h1>
+            <label className="container">Overall Health
+                <input type="radio" value="overall" checked={this.state.select_trigger==="overall"} onChange={this.handleChange}/>
+                <span className="checkmark"></span>
+                </label>
+                <label className="container">Frequency of Commits : {this.props.data[1].status}
+                <input type="radio" value="frequency" checked={this.state.select_trigger==="frequency"} onChange={this.handleChange}/>
+                <span className="checkmark"></span>
+                </label>
+                <label className="container">Code Duplication : {this.props.data[2].status}
+                <input type="radio" value="duplicate" checked={this.state.select_trigger==="duplicate"} onChange={this.handleChange}/>
+                <span className="checkmark"></span>
+                </label>
+                <label className="container">Code Complexity : {this.props.data[3].status}
+                <input type="radio" value="complex" checked={this.state.select_trigger==="complex"} onChange={this.handleChange}/>
+                <span className="checkmark"></span>
+                </label>
+                <label className="container">Bugspot Analyze : {this.props.data[4].status}
+                <input type="radio" value="bugspot" checked={this.state.select_trigger==="bugspot"} onChange={this.handleChange}/>
+                <span className="checkmark"></span>
+                </label>
+                <label className="container">Outdated Library : {this.props.data[5].status}
+                <input type="radio" value="outdated" checked={this.state.select_trigger==="outdated"} onChange={this.handleChange}/>
+                <span className="checkmark"></span>
+                </label>
+                <button type="submit" className="andon-button">Notify to Andon Model</button>
+            </form>
+        </div>
+        );
     }
 }
 

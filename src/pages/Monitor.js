@@ -40,7 +40,7 @@ class Monitor extends Component {
         this.props.update_bugspot('','Loading...');
         this.props.update_complexity('','Loading...');
         this.props.update_duplicate('','Loading...');
-        this.props.update_frequency('',0,'Loading...');
+        this.props.update_frequency('','Loading...');
         this.props.update_outdated('','Loading...');
     }
 
@@ -260,7 +260,7 @@ class Monitor extends Component {
                 this.props.update_bugspot('','Loading...');
                 this.props.update_complexity('','Loading...');
                 this.props.update_duplicate('','Loading...');
-                this.props.update_frequency('',0,'Loading...');
+                this.props.update_frequency('','Loading...');
                 this.props.update_outdated('','Loading...');
                 this.props.update_status(false);
                 this.setState({
@@ -310,49 +310,46 @@ class Monitor extends Component {
             )
         }
         else {
-        return (
-            <div>
-                <div className="landing">
-                    <img src={logo} className="App-logo" alt="logo" />
-                    <input id="search-bar1" className="search-input" type="text" name="search"  autoComplete="off" placeholder="Input username or organization name ..." required disabled={this.state.disabled} onChange={(e) => this.setState({username: e.target.value})}/>
-                    <input id="search-bar2" className="search-input" type="text" name="search"   autoComplete="off" placeholder="Input repository name ..." required disabled={this.state.disabled} onChange={(e) => this.setState({repo_url: e.target.value})}/>
+            return (
+                <div>
+                    <div className="landing">
+                        <img src={logo} className="App-logo" alt="logo" />
+                        <input id="search-bar1" className="search-input" type="text" name="search"  autoComplete="off" placeholder="Input username or organization name ..." required disabled={this.state.disabled} onChange={(e) => this.setState({username: e.target.value})}/>
+                        <input id="search-bar2" className="search-input" type="text" name="search"   autoComplete="off" placeholder="Input repository name ..." required disabled={this.state.disabled} onChange={(e) => this.setState({repo_url: e.target.value})}/>
                         <button className="button" onClick= {(e) => this.watchRepo(e)} >{this.state.text}</button>  
-                </div>
-    
-                { !isWatched ? (
-                      <div>
-                      <div className="sidenav">
-                      <div className="sidebar-con">
-                      <img className="img-profile-user" src={this.props.profile_img} alt="User"/>
-                      <h2>Welcome</h2>
-                      <h2 className="register-text">{this.props.profileUsername}</h2>
-                      </div>
-                      <button id="logoutBtn" className="andon-button" onClick= {(e) => this.onSubmit()}>Logout</button>
+                    </div>
+                    { !isWatched ? (
+                        <div>
+                            <div className="sidenav">
+                                <div className="sidebar-con">
+                                    <img className="img-profile-user" src={this.props.profile_img} alt="User"/>
+                                    <h2>Welcome</h2>
+                                    <h2 className="register-text">{this.props.profileUsername}</h2>
+                                </div>
+                                <button id="logoutBtn" className="andon-button" onClick= {(e) => this.onSubmit()}>Logout</button>
+                            </div>
+                            <UnwatchCard/>
                         </div>
-                    <UnwatchCard/>
-                    </div>
-                ) : (
-                    <div>
-                    <div className="sidenav">
-                    <div className="sidebar-con">
-
-                    <img className="img-profile-user" src={this.props.profile_img} alt="User"/>
-
-                    <h2>Welcome</h2>
-                    <h2 className="register-text">{this.props.profileUsername}</h2>
-                    </div>
-                    <a href="#main" className="andon-button">Notification Trigger</a>
-                    <a href="#frequency" className="andon-button">Frequency of commit</a>
-                    <a href="#duplicate" className="andon-button">Code Duplication</a>
-                    <a href="#complexity" className="andon-button">Code Complexity</a>
-                    <a href="#bugspot" className="andon-button">Bugspot Analyze</a>
-                    <a href="#outdated" className="andon-button">Outdated Library</a>
-                    <button id="logoutBtn" className="andon-button" onClick= {(e) => this.onSubmit()}>Logout</button>
+                    ) : (
+                        <div>
+                            <div className="sidenav">
+                                <div className="sidebar-con">
+                                    <img className="img-profile-user" src={this.props.profile_img} alt="User"/>
+                                    <h2>Welcome</h2>
+                                    <h2 className="register-text">{this.props.profileUsername}</h2>
+                                </div>
+                                <a href="#main" className="andon-button">Notification Trigger</a>
+                                <a href="#frequency" className="andon-button">Frequency of commit</a>
+                                <a href="#duplicate" className="andon-button">Code Duplication</a>
+                                <a href="#complexity" className="andon-button">Code Complexity</a>
+                                <a href="#bugspot" className="andon-button">Bugspot Analyze</a>
+                                <a href="#outdated" className="andon-button">Outdated Library</a>
+                                <button id="logoutBtn" className="andon-button" onClick= {(e) => this.onSubmit()}>Logout</button>
+                            </div>
+                            <WatchCard/>    
+                        </div>      
+                    )}
                 </div>
-                    <WatchCard/>    
-                    </div>      
-                )}
-            </div>
             );
         }
     }
