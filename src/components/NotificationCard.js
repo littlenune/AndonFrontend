@@ -11,7 +11,7 @@ class NotificationCard extends Component {
         this.state = {
             select_trigger: '',
             bugspot_score: 0,
-            command : ['overallHealth','frequency','duplicate','complex','bugspot','outdated']
+            command : ['overall','frequency','duplicate','complex','bugspot','outdated']
 
         };
         this.handleChange = this.handleChange.bind(this);
@@ -27,18 +27,19 @@ class NotificationCard extends Component {
 
       handleSubmit(event) {
         const command_index = this.state.command.indexOf(this.state.select_trigger);
-        let command_selected = this.state.command[command_index]
-        let value = ''
+        let command_selected = this.state.command[command_index];
+        let value = 0;
         event.preventDefault();
-        if(command_selected === 'overallHealth'){
-            this.value = this.props.data[0].score;
+        if(command_selected === 'overall'){
+            value = this.props.data[0].score;
         }
         else if (command_selected === 'frequency' ){
-            this.value = this.props.data[1].data;
+            value = this.props.data[1].data;
         }
         else{
-            this.value = this.props.data[command_index].data.overallHealth;
+            value = this.props.data[command_index].data.overallHealth;
         }
+        console.log(command_selected + ':' + value);
         swal({
             title: 'Notify Aquatan',
             text: 'Notifying...',
@@ -70,7 +71,7 @@ class NotificationCard extends Component {
         <form onSubmit={this.handleSubmit}>
         <h1>Notification Trigger</h1>
            <label className="container">Overall Health
-            <input type="radio" value="overallHealth" checked={this.state.select_trigger==="overallHealth"} onChange={this.handleChange}/>
+            <input type="radio" value="overall" checked={this.state.select_trigger==="overall"} onChange={this.handleChange}/>
             <span className="checkmark"></span>
             </label>
             <label className="container">Frequency of Commits : {this.props.data[1].status}

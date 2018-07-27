@@ -8,7 +8,6 @@ class FrequencyCommitCard extends Component {
             if(this.props.current_commit !== 'Information not found'){
                 if(this.props.commit_data.length === 0   ){ 
                     const data = this.props.current_commit;
-                    console.log('commit data',data);
                 return (
                     <div className="column-unwatch2">
                         <div className="frequency-con">
